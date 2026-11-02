@@ -18,15 +18,24 @@ export type Project = {
 };
 
 // Proyectos de alumnos que acompañé como docente: el código es de ellos.
+// Para sumar uno alcanza con slug, name, date, subject, repo y published.
+// Descripción, lenguaje, estrellas y última actualización se leen del repo en vivo.
 export type Mentorship = {
   slug: string;
   name: string;
   date: string; // YYYY-MM
-  role: string;
-  summary: string;
-  contribution: string[];
-  stack: string[];
-  link?: string;
+  subject: string; // materia en la que se desarrolló
+  school?: string;
+  repo?: string; // URL del repo de los alumnos en GitHub
+  demo?: string;
+  // Solo se muestra con published: true. Ponerlo recién cuando los alumnos
+  // (y la escuela, si corresponde) dieron permiso para publicarlo.
+  published: boolean;
+  role?: string; // por defecto "Profesor mentor"
+  summary?: string; // si falta, se usa la descripción del repo
+  contribution?: string[]; // mi aporte como docente
+  stack?: string[];
+  authors?: string[]; // nombres solo si los alumnos aceptaron aparecer
 };
 
 export type TimelineItem = {
@@ -101,21 +110,33 @@ export const mentorships: Mentorship[] = [
     slug: "sgn",
     name: "SGN – Sistema de Gestión de Notas",
     date: "2026-10",
-    role: "Profesor mentor",
+    subject: "Prácticas Profesionalizantes",
+    school: "E.T. N° 35 \"Ing. Eduardo Latzina\"",
+    repo: "", // pegar acá el link del repo de las alumnas
+    published: true,
     summary:
-      "Sistema web de calificaciones, legajos e inscripciones de la Escuela Técnica N° 35 \"Ing. Eduardo Latzina\", desarrollado por alumnas de la escuela.",
+      "Sistema web de calificaciones, legajos e inscripciones de la escuela, desarrollado por alumnas en Prácticas Profesionalizantes.",
     contribution: [
       "Guío el diseño y reviso el código; las alumnas lo siguen mejorando según mis correcciones",
       "Acompañamiento en seguridad: roles, JWT y manejo de contraseñas",
     ],
     stack: ["Java", "Spring Boot", "Next.js", "TypeScript"],
   },
+  // Plantilla para el próximo proyecto (copiar, completar y poner published: true):
+  // {
+  //   slug: "nombre-corto",
+  //   name: "Nombre del proyecto",
+  //   date: "2026-11",
+  //   subject: "Prácticas Profesionalizantes",
+  //   repo: "https://github.com/usuario/repo",
+  //   published: false,
+  // },
 ];
 
 export const timeline: TimelineItem[] = [
   { date: "2026-04", title: "Backend e-commerce", detail: "Express, MongoDB y Handlebars" },
   { date: "2026-08", title: "Biblioteca Digital API", detail: "API testeada y documentada con Swagger" },
-  { date: "2026-10", title: "Mentoría del SGN", detail: "Profesor mentor del proyecto de la ET35" },
+  { date: "2026-10", title: "Mentoría del SGN", detail: "Prácticas Profesionalizantes en la ET35" },
 ];
 
 export const education: EducationItem[] = [

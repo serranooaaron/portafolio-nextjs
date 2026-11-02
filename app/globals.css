@@ -205,36 +205,80 @@ main {
     "photo intro intro intro"
     "photo s1 s2 s3";
 }
-.photo-tile { grid-area: photo; padding: 0; min-height: 360px; }
+.photo-tile { grid-area: photo; min-height: 360px; }
 .intro-tile { grid-area: intro; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
 .hero .stat-tile:nth-child(3) { grid-area: s1; }
 .hero .stat-tile:nth-child(4) { grid-area: s2; }
 .hero .stat-tile:nth-child(5) { grid-area: s3; }
 
-/* Foto sin fondo apoyada sobre el degradado del bloque */
-.photo-frame { place-items: end center; overflow: hidden; }
-.photo-frame img {
-  width: 100%;
-  height: 100%;
-  max-height: 520px;
-  object-fit: contain;
-  object-position: center bottom;
-  display: block;
-  filter: drop-shadow(0 12px 24px rgb(0 0 0 / 0.25));
-}
-.photo-placeholder {
-  width: 100%;
-  height: 100%;
-  min-height: inherit;
+/* Foto: círculo del tamaño de la foto con luz que sale desde el centro */
+.photo-tile {
   display: grid;
   place-items: center;
-  border-radius: inherit;
-  background:
-    radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--pink) 70%, transparent), transparent 55%),
-    radial-gradient(circle at 80% 90%, color-mix(in srgb, var(--cyan) 70%, transparent), transparent 55%),
-    linear-gradient(135deg, var(--violet), color-mix(in srgb, var(--violet) 40%, var(--bg)));
+  padding: clamp(24px, 3vw, 40px);
 }
-.photo-placeholder span { font-size: clamp(3.5rem, 8vw, 6rem); font-weight: 800; color: #fff; letter-spacing: 2px; }
+
+.avatar {
+  position: relative;
+  width: min(100%, 400px); /* la foto mide 400×400: no se agranda más que eso */
+  aspect-ratio: 1;
+  border-radius: 50%;
+  isolation: isolate;
+}
+
+/* Aro de colores difuminado alrededor del círculo */
+.avatar-halo {
+  position: absolute;
+  inset: -8%;
+  z-index: -1;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--cyan), var(--violet), var(--pink), var(--amber), var(--green), var(--cyan));
+  filter: blur(28px);
+  opacity: 0.55;
+  animation: halo-spin 14s linear infinite;
+}
+
+/* Fondo redondo: blanco brillante en el centro que se abre a cian, violeta y rosa en el borde */
+.avatar-light {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 42%,
+      rgb(255 255 255 / 0.95) 0%,
+      color-mix(in srgb, var(--cyan) 35%, #fff) 22%,
+      color-mix(in srgb, var(--cyan) 85%, transparent) 42%,
+      color-mix(in srgb, var(--violet) 80%, transparent) 64%,
+      color-mix(in srgb, var(--pink) 85%, transparent) 84%,
+      var(--amber) 100%);
+  box-shadow:
+    inset 0 0 40px rgb(255 255 255 / 0.35),
+    0 0 0 4px color-mix(in srgb, var(--surface) 80%, transparent);
+  animation: light-pulse 4s ease-in-out infinite;
+}
+
+.avatar img,
+.avatar-initials {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.avatar img { object-fit: cover; object-position: center bottom; }
+.avatar-initials {
+  display: grid;
+  place-items: center;
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.25);
+}
+
+@keyframes halo-spin { to { transform: rotate(1turn); } }
+@keyframes light-pulse {
+  50% { filter: brightness(1.12) saturate(1.1); }
+}
 
 .eyebrow { color: var(--hue, var(--accent)); font-weight: 700; margin: 0; letter-spacing: 0.3px; }
 .intro-tile h1 { font-size: clamp(2.2rem, 5vw, 4rem); }
@@ -460,6 +504,19 @@ main {
 }
 
 .mini-title { font-size: 0.95rem; margin-top: 4px; }
+
+.card .school { font-size: 0.9rem; margin-top: -6px; }
+.card .authors { font-size: 0.9rem; font-style: italic; }
+.student-repo {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+.student-repo p { font-size: 0.92rem; }
+.student-repo-link { color: var(--hue); font-weight: 600; word-break: break-word; }
 .section-note.after { margin: 16px 0 0; font-size: 0.9rem; }
 
 .skills {
@@ -557,7 +614,8 @@ main {
       "s1 s2 s3";
     gap: 12px;
   }
-  .photo-tile { min-height: 0; aspect-ratio: 4 / 3; }
+  .photo-tile { min-height: 0; }
+  .avatar { width: min(78%, 300px); }
   .stat-tile { padding: 14px; text-align: center; }
   .stat-tile span { font-size: 0.8rem; line-height: 1.3; }
   .brand-name { display: none; }

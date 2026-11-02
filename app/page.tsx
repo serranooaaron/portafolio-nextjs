@@ -1,4 +1,5 @@
 import GitHubRepos from "@/components/GitHubRepos";
+import StudentRepo from "@/components/StudentRepo";
 import ThemeToggle from "@/components/ThemeToggle";
 import {
   GITHUB_USER,
@@ -67,23 +68,31 @@ function ProjectCard({ project, hue }: { project: Project; hue: string }) {
 }
 
 function MentorshipCard({ mentorship, hue }: { mentorship: Mentorship; hue: string }) {
+  const { contribution = [], stack = [], authors = [] } = mentorship;
   return (
     <article className={`card glow hue-${hue}`}>
       <header className="card-head">
         <h3>{mentorship.name}</h3>
         <time dateTime={mentorship.date}>{formatMonth(mentorship.date)}</time>
       </header>
-      <p className="role">{mentorship.role}</p>
-      <p>{mentorship.summary}</p>
-      <ul className="highlights">
-        {mentorship.contribution.map((c) => (
-          <li key={c}>{c}</li>
-        ))}
-      </ul>
-      <Tags items={mentorship.stack} />
-      {mentorship.link && (
+      <p className="role">
+        {mentorship.role ?? "Profesor mentor"} · {mentorship.subject}
+      </p>
+      {mentorship.school && <p className="school">{mentorship.school}</p>}
+      {mentorship.summary && <p>{mentorship.summary}</p>}
+      {authors.length > 0 && <p className="authors">Desarrollado por {authors.join(", ")}</p>}
+      {contribution.length > 0 && (
+        <ul className="highlights">
+          {contribution.map((c) => (
+            <li key={c}>{c}</li>
+          ))}
+        </ul>
+      )}
+      {stack.length > 0 && <Tags items={stack} />}
+      {mentorship.repo && <StudentRepo url={mentorship.repo} showDescription={!mentorship.summary} />}
+      {mentorship.demo && (
         <footer className="card-links">
-          <a href={mentorship.link}>Ver proyecto →</a>
+          <a href={mentorship.demo}>Ver demo →</a>
         </footer>
       )}
     </article>
@@ -101,6 +110,9 @@ const NAV = [
 export default function Home() {
   const sortedProjects = [...projects].sort((a, b) => Number(b.featured) - Number(a.featured));
   const sortedTimeline = [...timeline].sort((a, b) => b.date.localeCompare(a.date));
+  const studentProjects = mentorships
+    .filter((m) => m.published)
+    .sort((a, b) => b.date.localeCompare(a.date));
   const techCount = new Set(Object.values(skills).flat()).size;
 
   const contactItems = [
@@ -135,17 +147,19 @@ export default function Home() {
 
       <main id="inicio">
         <section className="bento hero">
-          <div className="tile photo-tile glow hue-violet">
-            {profile.photo ? (
-              <div className="photo-placeholder photo-frame">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
+          <div className="tile photo-tile glow hue-cyan">
+            <div className="avatar">
+              <span className="avatar-halo" aria-hidden="true" />
+              <span className="avatar-light" aria-hidden="true" />
+              {profile.photo ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img src={profile.photo} alt={`Foto de ${profile.name}`} />
-              </div>
-            ) : (
-              <div className="photo-placeholder" role="img" aria-label="Espacio para tu foto">
-                <span>{initials(profile.name)}</span>
-              </div>
-            )}
+              ) : (
+                <span className="avatar-initials" role="img" aria-label={`Iniciales de ${profile.name}`}>
+                  {initials(profile.name)}
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="tile intro-tile glow hue-cyan">
@@ -211,14 +225,20 @@ export default function Home() {
               <h3 className="mini-title">Materias</h3>
               <Tags items={teaching.subjects} />
             </article>
-            {mentorships.map((m, i) => (
-              <MentorshipCard key={m.slug} mentorship={m} hue={HUES[(i + 2) % HUES.length]} />
-            ))}
           </div>
-          {mentorships.length > 0 && (
-            <p className="section-note after">
-              Los proyectos mentoreados son de los estudiantes: yo guío y reviso, el código es de ellos.
-            </p>
+
+          {studentProjects.length > 0 && (
+            <>
+              <h3 className="subhead">Proyectos de mis alumnos</h3>
+              <div className="card-grid">
+                {studentProjects.map((m, i) => (
+                  <MentorshipCard key={m.slug} mentorship={m} hue={HUES[(i + 2) % HUES.length]} />
+                ))}
+              </div>
+              <p className="section-note after">
+                Proyectos publicados con permiso de sus autores. Yo guío y reviso; el código es de los estudiantes.
+              </p>
+            </>
           )}
         </section>
 

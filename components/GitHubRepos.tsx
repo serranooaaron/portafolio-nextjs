@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { LANGUAGE_COLORS, timeAgo } from "@/lib/github";
 
 type Repo = {
   id: number;
@@ -22,37 +23,6 @@ type State =
 
 // Sin token, la API pública de GitHub permite 60 pedidos por hora por visitante.
 const REFRESH_MS = 5 * 60 * 1000;
-
-const LANGUAGE_COLORS: Record<string, string> = {
-  JavaScript: "#f1e05a",
-  TypeScript: "#3178c6",
-  Java: "#b07219",
-  Python: "#3572a5",
-  HTML: "#e34c26",
-  CSS: "#663399",
-  Handlebars: "#f7931e",
-  Shell: "#89e051",
-  PHP: "#4f5d95",
-  "C#": "#178600",
-};
-
-const relative = new Intl.RelativeTimeFormat("es", { numeric: "auto" });
-
-function timeAgo(iso: string) {
-  const seconds = (new Date(iso).getTime() - Date.now()) / 1000;
-  const units: [Intl.RelativeTimeFormatUnit, number][] = [
-    ["year", 31536000],
-    ["month", 2592000],
-    ["week", 604800],
-    ["day", 86400],
-    ["hour", 3600],
-    ["minute", 60],
-  ];
-  for (const [unit, size] of units) {
-    if (Math.abs(seconds) >= size) return relative.format(Math.round(seconds / size), unit);
-  }
-  return "hace un momento";
-}
 
 export default function GitHubRepos({ user, limit = 9 }: { user: string; limit?: number }) {
   const [state, setState] = useState<State>({ status: "loading" });
