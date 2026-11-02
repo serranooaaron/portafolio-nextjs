@@ -1,0 +1,325 @@
+import GitHubRepos from "@/components/GitHubRepos";
+import ThemeToggle from "@/components/ThemeToggle";
+import {
+  GITHUB_USER,
+  HAS_LINKS,
+  contact,
+  education,
+  mentorships,
+  teaching,
+  profile,
+  projects,
+  skills,
+  timeline,
+  type Mentorship,
+  type Project,
+} from "@/data/portfolio";
+
+const MONTHS = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+const HUES = ["violet", "cyan", "pink", "amber", "green"] as const;
+
+function formatMonth(date: string) {
+  const [year, month] = date.split("-");
+  return `${MONTHS[Number(month) - 1]} ${year}`;
+}
+
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+function Tags({ items }: { items: string[] }) {
+  return (
+    <ul className="tags">
+      {items.map((t) => (
+        <li key={t}>{t}</li>
+      ))}
+    </ul>
+  );
+}
+
+function ProjectCard({ project, hue }: { project: Project; hue: string }) {
+  return (
+    <article className={`card glow hue-${hue}`}>
+      <header className="card-head">
+        <h3>{project.name}</h3>
+        <time dateTime={project.date}>{formatMonth(project.date)}</time>
+      </header>
+      <p>{project.summary}</p>
+      <ul className="highlights">
+        {project.highlights.map((h) => (
+          <li key={h}>{h}</li>
+        ))}
+      </ul>
+      <Tags items={project.stack} />
+      {((HAS_LINKS && project.repo) || project.demo) && (
+        <footer className="card-links">
+          {HAS_LINKS && project.repo && <a href={project.repo}>Código →</a>}
+          {project.demo && <a href={project.demo}>Demo →</a>}
+        </footer>
+      )}
+    </article>
+  );
+}
+
+function MentorshipCard({ mentorship, hue }: { mentorship: Mentorship; hue: string }) {
+  return (
+    <article className={`card glow hue-${hue}`}>
+      <header className="card-head">
+        <h3>{mentorship.name}</h3>
+        <time dateTime={mentorship.date}>{formatMonth(mentorship.date)}</time>
+      </header>
+      <p className="role">{mentorship.role}</p>
+      <p>{mentorship.summary}</p>
+      <ul className="highlights">
+        {mentorship.contribution.map((c) => (
+          <li key={c}>{c}</li>
+        ))}
+      </ul>
+      <Tags items={mentorship.stack} />
+      {mentorship.link && (
+        <footer className="card-links">
+          <a href={mentorship.link}>Ver proyecto →</a>
+        </footer>
+      )}
+    </article>
+  );
+}
+
+const NAV = [
+  ["proyectos", "Proyectos"],
+  ["repos", "Repos"],
+  ["docencia", "Docencia"],
+  ["trayectoria", "Trayectoria"],
+  ["contacto", "Contacto"],
+] as const;
+
+export default function Home() {
+  const sortedProjects = [...projects].sort((a, b) => Number(b.featured) - Number(a.featured));
+  const sortedTimeline = [...timeline].sort((a, b) => b.date.localeCompare(a.date));
+  const techCount = new Set(Object.values(skills).flat()).size;
+
+  const contactItems = [
+    contact.email && { label: "Email", value: contact.email, href: `mailto:${contact.email}`, icon: "✉" },
+    contact.phone && {
+      label: "Teléfono / WhatsApp",
+      value: contact.phone,
+      href: `https://wa.me/${contact.whatsapp || contact.phone.replace(/\D/g, "")}`,
+      icon: "☏",
+    },
+    contact.linkedin && { label: "LinkedIn", value: "/in/serranooaaron", href: contact.linkedin, icon: "in" },
+    contact.github && { label: "GitHub", value: `@${GITHUB_USER}`, href: contact.github, icon: "⌥" },
+    contact.location && { label: "Ubicación", value: contact.location, icon: "⌖" },
+  ].filter(Boolean) as { label: string; value: string; href?: string; icon: string }[];
+
+  return (
+    <>
+      <header className="site-header">
+        <a href="#inicio" className="brand">
+          <span className="brand-mark">{initials(profile.name)}</span>
+          <span className="brand-name">{profile.name}</span>
+        </a>
+        <nav className="site-nav" aria-label="Secciones">
+          {NAV.map(([id, label]) => (
+            <a key={id} href={`#${id}`}>
+              {label}
+            </a>
+          ))}
+        </nav>
+        <ThemeToggle />
+      </header>
+
+      <main id="inicio">
+        <section className="bento hero">
+          <div className="tile photo-tile glow hue-violet">
+            {profile.photo ? (
+              <div className="photo-placeholder photo-frame">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={profile.photo} alt={`Foto de ${profile.name}`} />
+              </div>
+            ) : (
+              <div className="photo-placeholder" role="img" aria-label="Espacio para tu foto">
+                <span>{initials(profile.name)}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="tile intro-tile glow hue-cyan">
+            <p className="eyebrow">{profile.role}</p>
+            <h1>
+              Hola, soy <span className="gradient-text">{profile.name}</span>.
+            </h1>
+            <p className="pitch">{profile.pitch}</p>
+            <p className="looking-for">
+              <span aria-hidden="true">🎯</span> Abierto a oportunidades en <strong>{profile.lookingFor}</strong>
+            </p>
+            <div className="hero-actions">
+              <a href="#contacto" className="btn btn-primary">
+                Contactarme
+              </a>
+              <a href="#proyectos" className="btn btn-ghost">
+                Ver proyectos
+              </a>
+            </div>
+          </div>
+
+          <div className="tile stat-tile glow hue-pink">
+            <strong>{techCount}</strong>
+            <span>tecnologías</span>
+          </div>
+          <div className="tile stat-tile glow hue-amber">
+            <strong>{education.length}</strong>
+            <span>títulos y carreras</span>
+          </div>
+          <div className="tile stat-tile glow hue-green">
+            <strong>{teaching.subjects.length}</strong>
+            <span>materias que dicto</span>
+          </div>
+        </section>
+
+        <section id="proyectos" className="section">
+          <h2 className="section-title">Proyectos</h2>
+          <div className="card-grid">
+            {sortedProjects.map((p, i) => (
+              <ProjectCard key={p.slug} project={p} hue={HUES[i % HUES.length]} />
+            ))}
+          </div>
+        </section>
+
+        <section id="repos" className="section">
+          <h2 className="section-title">Repositorios públicos</h2>
+          {HAS_LINKS ? (
+            <GitHubRepos user={GITHUB_USER} />
+          ) : (
+            <p className="notice">
+              Configura <code>GITHUB_USER</code> en <code>data/portfolio.ts</code> para ver tus repositorios en
+              vivo.
+            </p>
+          )}
+        </section>
+
+        <section id="docencia" className="section">
+          <h2 className="section-title">Docencia y mentoría</h2>
+          <div className="card-grid">
+            <article className="card glow hue-amber teaching-card">
+              <p className="role">Docente · nivel técnico secundario</p>
+              <p>{teaching.summary}</p>
+              <h3 className="mini-title">Materias</h3>
+              <Tags items={teaching.subjects} />
+            </article>
+            {mentorships.map((m, i) => (
+              <MentorshipCard key={m.slug} mentorship={m} hue={HUES[(i + 2) % HUES.length]} />
+            ))}
+          </div>
+          {mentorships.length > 0 && (
+            <p className="section-note after">
+              Los proyectos mentoreados son de los estudiantes: yo guío y reviso, el código es de ellos.
+            </p>
+          )}
+        </section>
+
+        <section id="trayectoria" className="section bento split">
+          <div className="tile glow hue-green">
+            <h2 className="section-title">Formación</h2>
+            <ol className="education">
+              {education.map((e) => (
+                <li key={e.title}>
+                  <span className="edu-period">
+                    {e.period}
+                    {e.current && <span className="badge">En curso</span>}
+                  </span>
+                  <strong>{e.title}</strong>
+                  {e.institution && <span className="edu-inst">{e.institution}</span>}
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div className="tile glow hue-violet">
+            <h2 className="section-title">Mi 2026</h2>
+            <ol className="timeline">
+              {sortedTimeline.map((item) => (
+                <li key={item.date + item.title}>
+                  <time dateTime={item.date}>{formatMonth(item.date)}</time>
+                  <div>
+                    <strong>{item.title}</strong>
+                    <span>{item.detail}</span>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div className="tile glow hue-cyan span-all">
+            <h2 className="section-title">Stack</h2>
+            <dl className="skills">
+              {Object.entries(skills).map(([group, items]) => (
+                <div key={group}>
+                  <dt>{group}</dt>
+                  <dd>
+                    <Tags items={items} />
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </section>
+
+        <section id="contacto" className="section">
+          <div className="tile contact-tile glow hue-pink">
+            <div className="contact-intro">
+              <h2 className="section-title">Contacto</h2>
+              <p className="pitch">
+                ¿Tienes un proyecto, una propuesta laboral o quieres que mentoree a tu equipo? Escríbeme.
+              </p>
+              {contact.email && (
+                <a href={`mailto:${contact.email}`} className="btn btn-primary">
+                  Enviar un email
+                </a>
+              )}
+            </div>
+            {contactItems.length > 0 ? (
+              <ul className="contact-list">
+                {contactItems.map((item) => (
+                  <li key={item.label}>
+                    {item.href ? (
+                      <a href={item.href} className="contact-item glow" target="_blank" rel="noreferrer">
+                        <span className="contact-icon" aria-hidden="true">
+                          {item.icon}
+                        </span>
+                        <span>
+                          <small>{item.label}</small>
+                          {item.value}
+                        </span>
+                      </a>
+                    ) : (
+                      <div className="contact-item glow">
+                        <span className="contact-icon" aria-hidden="true">
+                          {item.icon}
+                        </span>
+                        <span>
+                          <small>{item.label}</small>
+                          {item.value}
+                        </span>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="notice">
+                Completa <code>contact</code> en <code>data/portfolio.ts</code> con tus datos.
+              </p>
+            )}
+          </div>
+        </section>
+      </main>
+
+      <footer className="site-footer">
+        © {new Date().getFullYear()} {profile.name} · Hecho con Next.js y desplegado en Vercel
+      </footer>
+    </>
+  );
+}
