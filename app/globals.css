@@ -200,7 +200,7 @@ main {
 
 /* Hero en bloques */
 .hero {
-  grid-template-columns: minmax(240px, 1.3fr) repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(300px, 1.5fr) repeat(3, minmax(0, 1fr));
   grid-template-areas:
     "photo intro intro intro"
     "photo s1 s2 s3";
@@ -213,9 +213,35 @@ main {
 
 /* Foto: círculo del tamaño de la foto con luz que sale desde el centro */
 .photo-tile {
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
   padding: clamp(24px, 3vw, 40px);
+}
+
+.photo-caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.photo-caption strong { font-size: 1.15rem; }
+.photo-caption span { color: var(--muted); font-size: 0.92rem; }
+.photo-caption .available {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.85rem;
+  background: color-mix(in srgb, var(--green) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--green) 35%, transparent);
 }
 
 .avatar {
@@ -319,9 +345,18 @@ main {
 .card { padding: 24px; display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--hue); }
 .card p { margin: 0; color: var(--muted); }
 .card .role { color: var(--hue); font-weight: 700; font-size: 0.9rem; }
-.card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-.card-head h3 { font-size: 1.15rem; }
-.card-head time { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
+.card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.card-head h3 { font-size: 1.15rem; flex: 1; min-width: 0; }
+.card-head time {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
 .highlights { margin: 0; padding-left: 18px; font-size: 0.95rem; }
 .highlights li::marker { color: var(--hue); }
 .card-links { margin-top: auto; display: flex; gap: 16px; font-weight: 600; font-size: 0.95rem; }
@@ -406,7 +441,7 @@ main {
 
 .repo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
   gap: 16px;
 }
 .repo-card {
@@ -505,6 +540,24 @@ main {
 
 .mini-title { font-size: 0.95rem; margin-top: 4px; }
 
+.subhead { margin: 0 0 14px; font-size: 1.1rem; color: var(--muted); }
+
+/* Docencia: tarjeta de docente a la izquierda, proyectos de alumnos a la derecha */
+.teaching-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 16px;
+}
+.teaching-col,
+.student-projects { display: flex; flex-direction: column; }
+/* La tarjeta de docente se estira hasta la altura de la columna de alumnos */
+.teaching-layout .teaching-card { flex: 1; }
+.student-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+}
+
 .card .school { font-size: 0.9rem; margin-top: -6px; }
 .card .authors { font-size: 0.9rem; font-style: italic; }
 .student-repo {
@@ -553,8 +606,13 @@ main {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: 12px;
 }
+.contact-list li { display: flex; }
+/* El email es el dato más largo: ocupa la fila entera para no desparejar alturas */
+.contact-list li:first-child { grid-column: 1 / -1; }
 .contact-item {
   --hue: var(--pink);
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -563,7 +621,7 @@ main {
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
-  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 .contact-list li:nth-child(5n + 2) .contact-item { --hue: var(--violet); }
 .contact-list li:nth-child(5n + 3) .contact-item { --hue: var(--cyan); }
@@ -591,13 +649,19 @@ main {
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
+  /* Tablet: la foto pasa a una franja horizontal arriba, con el texto al costado */
   .hero {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-template-areas:
-      "photo intro intro"
+      "photo photo photo"
+      "intro intro intro"
       "s1 s2 s3";
   }
-  .photo-tile { min-height: 300px; }
+  .photo-tile { min-height: 0; flex-direction: row; gap: clamp(20px, 4vw, 40px); }
+  .photo-tile .avatar { width: min(40%, 240px); flex-shrink: 0; }
+  .photo-caption { align-items: flex-start; text-align: left; }
+
+  .teaching-layout { grid-template-columns: 1fr; gap: 28px; }
 }
 
 @media (max-width: 860px) {
@@ -614,8 +678,9 @@ main {
       "s1 s2 s3";
     gap: 12px;
   }
-  .photo-tile { min-height: 0; }
-  .avatar { width: min(78%, 300px); }
+  .photo-tile { flex-direction: column; }
+  .photo-tile .avatar { width: min(72%, 260px); }
+  .photo-caption { align-items: center; text-align: center; }
   .stat-tile { padding: 14px; text-align: center; }
   .stat-tile span { font-size: 0.8rem; line-height: 1.3; }
   .brand-name { display: none; }

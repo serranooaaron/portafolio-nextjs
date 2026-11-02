@@ -160,6 +160,13 @@ export default function Home() {
                 </span>
               )}
             </div>
+            <div className="photo-caption">
+              <strong>{profile.name}</strong>
+              {contact.location && <span>📍 {contact.location}</span>}
+              <span className="available">
+                <span className="live-dot" aria-hidden="true" /> Disponible para trabajar
+              </span>
+            </div>
           </div>
 
           <div className="tile intro-tile glow hue-cyan">
@@ -218,27 +225,33 @@ export default function Home() {
 
         <section id="docencia" className="section">
           <h2 className="section-title">Docencia y mentoría</h2>
-          <div className="card-grid">
-            <article className="card glow hue-amber teaching-card">
-              <p className="role">Docente · nivel técnico secundario</p>
-              <p>{teaching.summary}</p>
-              <h3 className="mini-title">Materias</h3>
-              <Tags items={teaching.subjects} />
-            </article>
-          </div>
+          <div className={studentProjects.length > 0 ? "teaching-layout" : undefined}>
+            <div className="teaching-col">
+              <h3 className="subhead">Mi rol</h3>
+              <article className="card glow hue-amber teaching-card">
+                <p className="role">Docente · nivel técnico secundario</p>
+                <p>{teaching.summary}</p>
+                <h3 className="mini-title">Materias</h3>
+                <Tags items={teaching.subjects} />
+              </article>
+            </div>
 
-          {studentProjects.length > 0 && (
-            <>
-              <h3 className="subhead">Proyectos de mis alumnos</h3>
-              <div className="card-grid">
-                {studentProjects.map((m, i) => (
-                  <MentorshipCard key={m.slug} mentorship={m} hue={HUES[(i + 2) % HUES.length]} />
-                ))}
+            {studentProjects.length > 0 && (
+              <div className="student-projects">
+                <h3 className="subhead">Proyectos de mis alumnos</h3>
+                <div className="student-grid">
+                  {studentProjects.map((m, i) => (
+                    <MentorshipCard key={m.slug} mentorship={m} hue={HUES[(i + 2) % HUES.length]} />
+                  ))}
+                </div>
               </div>
-              <p className="section-note after">
-                Proyectos publicados con permiso de sus autores. Yo guío y reviso; el código es de los estudiantes.
-              </p>
-            </>
+            )}
+          </div>
+          {studentProjects.length > 0 && (
+            <p className="section-note after">
+              Los proyectos de alumnos se publican con permiso de sus autores. Yo guío y reviso; el código es de
+              los estudiantes.
+            </p>
           )}
         </section>
 
