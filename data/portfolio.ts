@@ -141,8 +141,8 @@ export const timeline: TimelineItem[] = [
 
 export const education: EducationItem[] = [
   { title: "Licenciatura en Ciencias de Datos", institution: "UNICABA", period: "2025 – actualidad", current: true },
-  { title: "Técnico Superior Analista en Sistemas", period: "2024" },
-  { title: "Técnico en Computación", period: "2021" },
+  { title: "Técnico Superior Analista en Sistemas", institution: "IFTS N°4", period: "2024" },
+  { title: "Técnico en Computación", institution: "E.T. N°37 D.E. 11 - Hogar Naval Stella Maris", period: "2021" },
 ];
 
 export const teaching = {
