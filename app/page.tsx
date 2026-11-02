@@ -1,6 +1,7 @@
 import GitHubRepos from "@/components/GitHubRepos";
 import StudentRepo from "@/components/StudentRepo";
 import ThemeToggle from "@/components/ThemeToggle";
+import { getRepo, getRepos, type Repo } from "@/lib/github-server";
 import {
   GITHUB_USER,
   HAS_LINKS,
@@ -67,7 +68,15 @@ function ProjectCard({ project, hue }: { project: Project; hue: string }) {
   );
 }
 
-function MentorshipCard({ mentorship, hue }: { mentorship: Mentorship; hue: string }) {
+function MentorshipCard({
+  mentorship,
+  repoInfo,
+  hue,
+}: {
+  mentorship: Mentorship;
+  repoInfo: Repo | null;
+  hue: string;
+}) {
   const { contribution = [], stack = [], authors = [] } = mentorship;
   return (
     <article className={`card glow hue-${hue}`}>
@@ -89,7 +98,9 @@ function MentorshipCard({ mentorship, hue }: { mentorship: Mentorship; hue: stri
         </ul>
       )}
       {stack.length > 0 && <Tags items={stack} />}
-      {mentorship.repo && <StudentRepo url={mentorship.repo} showDescription={!mentorship.summary} />}
+      {mentorship.repo && (
+        <StudentRepo url={mentorship.repo} info={repoInfo} showDescription={!mentorship.summary} />
+      )}
       {mentorship.demo && (
         <footer className="card-links">
           <a href={mentorship.demo}>Ver demo →</a>
@@ -107,12 +118,22 @@ const NAV = [
   ["contacto", "Contacto"],
 ] as const;
 
-export default function Home() {
+// La página se regenera en Vercel cada 10 minutos con datos frescos de GitHub (ISR).
+// Debe ser un número literal: Next.js lo lee al compilar. Mantenerlo igual a REVALIDATE_SECONDS.
+export const revalidate = 600;
+
+export default async function Home() {
   const sortedProjects = [...projects].sort((a, b) => Number(b.featured) - Number(a.featured));
   const sortedTimeline = [...timeline].sort((a, b) => b.date.localeCompare(a.date));
   const studentProjects = mentorships
     .filter((m) => m.published)
     .sort((a, b) => b.date.localeCompare(a.date));
+
+  // Todas las consultas a GitHub en paralelo, en el servidor.
+  const [reposResult, studentRepos] = await Promise.all([
+    HAS_LINKS ? getRepos(GITHUB_USER) : null,
+    Promise.all(studentProjects.map((m) => (m.repo ? getRepo(m.repo) : null))),
+  ]);
   const techCount = new Set(Object.values(skills).flat()).size;
 
   const contactItems = [
@@ -213,8 +234,8 @@ export default function Home() {
 
         <section id="repos" className="section">
           <h2 className="section-title">Repositorios públicos</h2>
-          {HAS_LINKS ? (
-            <GitHubRepos user={GITHUB_USER} />
+          {reposResult ? (
+            <GitHubRepos result={reposResult} />
           ) : (
             <p className="notice">
               Configura <code>GITHUB_USER</code> en <code>data/portfolio.ts</code> para ver tus repositorios en
@@ -241,7 +262,12 @@ export default function Home() {
                 <h3 className="subhead">Proyectos de mis alumnos</h3>
                 <div className="student-grid">
                   {studentProjects.map((m, i) => (
-                    <MentorshipCard key={m.slug} mentorship={m} hue={HUES[(i + 2) % HUES.length]} />
+                    <MentorshipCard
+                      key={m.slug}
+                      mentorship={m}
+                      repoInfo={studentRepos[i]}
+                      hue={HUES[(i + 2) % HUES.length]}
+                    />
                   ))}
                 </div>
               </div>
