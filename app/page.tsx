@@ -318,7 +318,8 @@ export default function Home() {
       </main>
 
       <footer className="site-footer">
-        © {new Date().getFullYear()} {profile.name} · Hecho con Next.js y desplegado en Vercel
+        © {new Date().getFullYear()} {profile.name} · Hecho con Next.js y desplegado en Vercel ·{" "}
+        <a href="https://github.com/serranooaaron/portafolio-nextjs">Código fuente</a>
       </footer>
     </>
   );
