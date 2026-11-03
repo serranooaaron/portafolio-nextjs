@@ -2,7 +2,7 @@
 
 Mi portafolio personal: proyectos, docencia, formación y repositorios públicos de GitHub en vivo.
 
-🌐 **https://portafolio-rho-one-62.vercel.app**
+🌐 **https://serranopf.vercel.app**
 
 ## Stack
 
