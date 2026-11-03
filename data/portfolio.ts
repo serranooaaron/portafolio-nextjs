@@ -78,29 +78,33 @@ export const contact = {
 
 export const projects: Project[] = [
   {
-    slug: "biblioteca-digital-api",
-    name: "Biblioteca Digital API",
-    date: "2026-08",
+    slug: "biblioteca-digital",
+    name: "Biblioteca Digital",
+    date: "2026-11",
     summary:
-      "API REST para gestionar usuarios, catálogo digital, préstamos y sesiones de una biblioteca.",
+      "Aplicación web de biblioteca: catálogo, préstamos y devoluciones de libros, con panel para administrar libros, préstamos y usuarios.",
     highlights: [
-      "Tests de punta a punta con Mocha, Chai y Supertest sobre MongoDB en memoria",
-      "Documentación OpenAPI con Swagger",
-      "Autenticación con JWT y carga de archivos con Multer",
+      "Roles con JWT en cookie httpOnly y contraseñas con bcrypt",
+      "31 tests de integración con Mocha, Chai y Supertest sobre MongoDB en memoria",
+      "Portadas con Multer validadas por tipo y tamaño, y API documentada con Swagger",
     ],
-    stack: ["Node.js", "Express", "MongoDB", "Swagger", "Mocha"],
-    repo: `https://github.com/${GITHUB_USER}/backend3-comision86245`,
+    stack: ["Node.js", "Express", "Handlebars", "MongoDB", "JWT", "Mocha"],
+    repo: `https://github.com/${GITHUB_USER}/biblioteca-digital`,
     featured: true,
   },
   {
-    slug: "backend-ecommerce",
-    name: "Backend e-commerce con Express",
-    date: "2026-04",
+    slug: "tienda-gamer",
+    name: "Tienda Gamer",
+    date: "2026-11",
     summary:
-      "Servidor de productos con vistas Handlebars, MongoDB y paginación.",
-    highlights: ["Paginación con mongoose-paginate-v2", "Script de seed para datos de prueba"],
-    stack: ["Express", "MongoDB", "Handlebars"],
-    repo: `https://github.com/${GITHUB_USER}/backend-comision86215`,
+      "E-commerce de periféricos gamer: catálogo con filtros, carrito por usuario y panel de administración de productos.",
+    highlights: [
+      "Cuentas de usuario con JWT y bcrypt; cada carrito solo lo opera su dueño",
+      "Catálogo con búsqueda, categorías, stock y paginación con mongoose-paginate-v2",
+      "Panel de administración para crear, editar, pausar y borrar productos",
+    ],
+    stack: ["Node.js", "Express", "Handlebars", "MongoDB", "JWT"],
+    repo: `https://github.com/${GITHUB_USER}/tienda-gamer`,
     featured: true,
   },
 ];
@@ -136,6 +140,7 @@ export const mentorships: Mentorship[] = [
 export const timeline: TimelineItem[] = [
   { date: "2026-04", title: "Backend e-commerce", detail: "Express, MongoDB y Handlebars" },
   { date: "2026-08", title: "Biblioteca Digital API", detail: "API testeada y documentada con Swagger" },
+  { date: "2026-11", title: "Tienda Gamer y Biblioteca Digital", detail: "Front completo, usuarios con JWT y correcciones de seguridad" },
   { date: "2026-10", title: "Mentoría del SGN", detail: "Prácticas Profesionalizantes en la ET35" },
 ];
 
