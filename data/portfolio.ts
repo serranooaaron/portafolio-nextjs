@@ -10,8 +10,10 @@ export type Project = {
   name: string;
   date: string; // YYYY-MM
   summary: string;
-  highlights: string[];
+  highlights: string[]; // tres como máximo: lo demás va en el README del repo
   stack: string[];
+  image: string; // captura real en public/proyectos, con datos de prueba
+  imageAlt: string;
   repo?: string;
   demo?: string;
   featured: boolean;
@@ -84,13 +86,13 @@ export const projects: Project[] = [
     summary:
       "Aplicación web de biblioteca: catálogo, préstamos y devoluciones de libros, con panel para administrar libros, préstamos y usuarios.",
     highlights: [
+      "Préstamos con vencimiento y avisos para lectores y administradores",
       "Roles con JWT en cookie httpOnly y contraseñas con bcrypt",
-      "38 tests de integración con Mocha, Chai y Supertest sobre MongoDB en memoria",
-      "Préstamos con fecha de vencimiento y aviso de vencidos para lectores y administradores",
-      "Portadas con Multer validadas por tipo y tamaño, y API documentada con Swagger",
-      "Imagen de Docker sin privilegios de root y apagado ordenado del servidor",
+      "38 tests de integración y API documentada con Swagger",
     ],
     stack: ["Node.js", "Express", "Handlebars", "MongoDB", "JWT", "Mocha"],
+    image: "/proyectos/biblioteca-digital.webp",
+    imageAlt: "Página de inicio de Biblioteca Digital, con un estante de libros y los datos del catálogo",
     repo: `https://github.com/${GITHUB_USER}/biblioteca-digital`,
     featured: true,
   },
@@ -101,12 +103,13 @@ export const projects: Project[] = [
     summary:
       "E-commerce de periféricos gamer: catálogo con filtros, carrito por usuario y panel de administración de productos.",
     highlights: [
-      "Cuentas de usuario con JWT y bcrypt; cada carrito solo lo opera su dueño",
-      "Catálogo con búsqueda, categorías, stock y paginación con mongoose-paginate-v2",
-      "Panel de administración para crear, editar, pausar y borrar productos",
-      "63 tests automáticos de la API con Mocha, Chai y Supertest",
+      "Catálogo con búsqueda, categorías, stock y paginación",
+      "Cuentas con JWT y un carrito que solo opera su dueño",
+      "Panel de administración y 63 tests automáticos de la API",
     ],
     stack: ["Node.js", "Express", "Handlebars", "MongoDB", "JWT", "Mocha"],
+    image: "/proyectos/tienda-gamer.webp",
+    imageAlt: "Página de inicio de Tienda Gamer, con un micrófono destacado y el acceso al catálogo",
     repo: `https://github.com/${GITHUB_USER}/tienda-gamer`,
     featured: true,
   },

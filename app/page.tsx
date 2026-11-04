@@ -80,6 +80,11 @@ function ProjectCard({ project, hue }: { project: Project; hue: string }) {
           <time dateTime={project.date}>{formatMonth(project.date)}</time>
         </header>
         <p>{project.summary}</p>
+        <ul className="highlights">
+          {project.highlights.map((h) => (
+            <li key={h}>{h}</li>
+          ))}
+        </ul>
         <Tags items={project.stack} />
         {((HAS_LINKS && project.repo) || project.demo) && (
           <footer className="card-links">
@@ -88,11 +93,10 @@ function ProjectCard({ project, hue }: { project: Project; hue: string }) {
           </footer>
         )}
       </div>
-      <ul className="highlights feature-panel">
-        {project.highlights.map((h) => (
-          <li key={h}>{h}</li>
-        ))}
-      </ul>
+      <div className="feature-shot">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={project.image} alt={project.imageAlt} width={1200} height={750} loading="lazy" />
+      </div>
     </Reveal>
   );
 }

@@ -432,11 +432,12 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
 }
 .highlights { margin: 0; padding-left: 18px; font-size: 0.95rem; }
 .highlights li::marker { color: var(--hue); }
-/* Proyecto a todo el ancho: texto de un lado, logros en un panel de color del otro */
+/* Proyecto a todo el ancho: texto de un lado, captura real de la app del otro */
 .feature-list { display: grid; gap: 16px; }
 .feature {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  align-items: center;
   gap: clamp(20px, 3vw, 40px);
   padding: clamp(24px, 3.5vw, 44px);
   border-radius: 28px;
@@ -444,16 +445,22 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
 .feature-body { display: flex; flex-direction: column; gap: 16px; }
 .feature .card-head h3 { font-size: clamp(1.6rem, 3vw, 2.4rem); letter-spacing: -0.01em; }
 .feature p { font-size: clamp(1rem, 1.3vw, 1.1rem); }
-.feature-panel {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-  padding: clamp(20px, 2.5vw, 32px) clamp(20px, 2.5vw, 32px) clamp(20px, 2.5vw, 32px) clamp(36px, 3.5vw, 48px);
-  border-radius: 20px;
-  background: color-mix(in srgb, var(--hue) 10%, var(--surface-2));
+.feature .highlights { display: grid; gap: 6px; }
+.feature-shot {
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--hue) 30%, var(--border));
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--hue) 16%, transparent);
 }
-.feature:nth-child(even) .feature-panel { order: -1; }
+.feature-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: scale 0.4s var(--ease-out);
+}
+.feature:hover .feature-shot img { scale: 1.02; }
+.feature:nth-child(even) { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+.feature:nth-child(even) .feature-shot { order: -1; }
 
 /* Franjas de tecnologías: se desplazan con el scroll, cada una hacia un lado */
 .marquee {
@@ -838,8 +845,9 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
 @media (max-width: 860px) {
   .split,
   .feature,
+  .feature:nth-child(even),
   .contact-tile { grid-template-columns: 1fr; }
-  .feature:nth-child(even) .feature-panel { order: 0; }
+  .feature .feature-shot { order: -1; } /* en una columna, primero la captura */
 
   /* Una columna: la foto va debajo del texto y los datos forman una fila */
   .hero { min-height: 0; padding-top: 88px; }
