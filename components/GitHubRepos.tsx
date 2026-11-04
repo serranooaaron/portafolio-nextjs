@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { LANGUAGE_COLORS, timeAgo } from "@/lib/github";
 import type { ReposResult } from "@/lib/github-server";
 
@@ -17,8 +18,16 @@ export default function GitHubRepos({ result }: { result: ReposResult }) {
         <span className="live-dot" aria-hidden="true" /> Datos de GitHub · se actualizan cada 10 minutos
       </p>
       <div className="repo-grid">
-        {result.repos.map((repo) => (
-          <a key={repo.id} href={repo.html_url} className="repo-card glow" target="_blank" rel="noreferrer">
+        {result.repos.map((repo, i) => (
+          <a
+            key={repo.id}
+            href={repo.html_url}
+            className="repo-card glow"
+            target="_blank"
+            rel="noreferrer"
+            data-reveal="scale"
+            style={{ "--i": i % 3 } as CSSProperties}
+          >
             <h3>{repo.name}</h3>
             <p>{repo.description ?? "Sin descripción"}</p>
             <div className="repo-meta">

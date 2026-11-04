@@ -1,3 +1,4 @@
+import type { CSSProperties, ReactNode } from "react";
 import GitHubRepos from "@/components/GitHubRepos";
 import StudentRepo from "@/components/StudentRepo";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -44,27 +45,76 @@ function Tags({ items }: { items: string[] }) {
   );
 }
 
+function SectionHead({ title, sub }: { title: string; sub: string }) {
+  return (
+    <h2 className="section-head" data-reveal="rise">
+      {title} <span>{sub}</span>
+    </h2>
+  );
+}
+
+function Reveal({
+  as: Tag = "div",
+  index = 0,
+  className,
+  children,
+}: {
+  as?: "div" | "article";
+  index?: number;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <Tag className={className} data-reveal="scale" style={{ "--i": index } as CSSProperties}>
+      {children}
+    </Tag>
+  );
+}
+
 function ProjectCard({ project, hue }: { project: Project; hue: string }) {
   return (
-    <article className={`card glow hue-${hue}`}>
-      <header className="card-head">
-        <h3>{project.name}</h3>
-        <time dateTime={project.date}>{formatMonth(project.date)}</time>
-      </header>
-      <p>{project.summary}</p>
-      <ul className="highlights">
+    <Reveal as="article" className={`card feature glow hue-${hue}`}>
+      <div className="feature-body">
+        <header className="card-head">
+          <h3>{project.name}</h3>
+          <time dateTime={project.date}>{formatMonth(project.date)}</time>
+        </header>
+        <p>{project.summary}</p>
+        <Tags items={project.stack} />
+        {((HAS_LINKS && project.repo) || project.demo) && (
+          <footer className="card-links">
+            {HAS_LINKS && project.repo && <a href={project.repo}>Código →</a>}
+            {project.demo && <a href={project.demo}>Demo →</a>}
+          </footer>
+        )}
+      </div>
+      <ul className="highlights feature-panel">
         {project.highlights.map((h) => (
           <li key={h}>{h}</li>
         ))}
       </ul>
-      <Tags items={project.stack} />
-      {((HAS_LINKS && project.repo) || project.demo) && (
-        <footer className="card-links">
-          {HAS_LINKS && project.repo && <a href={project.repo}>Código →</a>}
-          {project.demo && <a href={project.demo}>Demo →</a>}
-        </footer>
-      )}
-    </article>
+    </Reveal>
+  );
+}
+
+// Franja decorativa: el mismo listado se lee completo y accesible en la sección Stack.
+function Marquee({ items }: { items: string[] }) {
+  const half = Math.ceil(items.length / 2);
+  const rows = [items.slice(0, half), items.slice(half)];
+  return (
+    <div className="marquee" aria-hidden="true">
+      {rows.map((row, r) => (
+        <div key={r} className="marquee-row">
+          {Array.from({ length: 4 }, () => row)
+            .flat()
+            .map((item, i) => (
+              <span key={i} className={`marquee-item hue-${HUES[(i + r * 2) % HUES.length]}`}>
+                {item}
+              </span>
+            ))}
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -72,14 +122,16 @@ function MentorshipCard({
   mentorship,
   repoInfo,
   hue,
+  index,
 }: {
   mentorship: Mentorship;
   repoInfo: Repo | null;
   hue: string;
+  index: number;
 }) {
   const { contribution = [], stack = [], authors = [] } = mentorship;
   return (
-    <article className={`card glow hue-${hue}`}>
+    <Reveal as="article" index={index} className={`card glow hue-${hue}`}>
       <header className="card-head">
         <h3>{mentorship.name}</h3>
         <time dateTime={mentorship.date}>{formatMonth(mentorship.date)}</time>
@@ -106,7 +158,7 @@ function MentorshipCard({
           <a href={mentorship.demo}>Ver demo →</a>
         </footer>
       )}
-    </article>
+    </Reveal>
   );
 }
 
@@ -134,7 +186,8 @@ export default async function Home() {
     HAS_LINKS ? getRepos(GITHUB_USER) : null,
     Promise.all(studentProjects.map((m) => (m.repo ? getRepo(m.repo) : null))),
   ]);
-  const techCount = new Set(Object.values(skills).flat()).size;
+  const allSkills = [...new Set(Object.values(skills).flat())];
+  const techCount = allSkills.length;
 
   const contactItems = [
     contact.email && { label: "Email", value: contact.email, href: `mailto:${contact.email}`, icon: "✉" },
@@ -151,7 +204,7 @@ export default async function Home() {
 
   return (
     <>
-      <header className="site-header">
+      <header className="site-header is-at-top">
         <a href="#inicio" className="brand">
           <span className="brand-mark">{initials(profile.name)}</span>
           <span className="brand-name">{profile.name}</span>
@@ -167,73 +220,78 @@ export default async function Home() {
       </header>
 
       <main id="inicio">
-        <section className="bento hero">
-          <div className="tile photo-tile glow hue-cyan">
-            <div className="avatar">
-              <span className="avatar-halo" aria-hidden="true" />
-              <span className="avatar-light" aria-hidden="true" />
-              {profile.photo ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={profile.photo} alt={`Foto de ${profile.name}`} />
-              ) : (
-                <span className="avatar-initials" role="img" aria-label={`Iniciales de ${profile.name}`}>
-                  {initials(profile.name)}
+        <section className="hero">
+          <div className="hero-inner">
+            <div className="hero-copy">
+              <p className="hero-meta">
+                <span className="available">
+                  <span className="live-dot" aria-hidden="true" /> Disponible para trabajar
                 </span>
-              )}
+                {contact.location && <span>{contact.location}</span>}
+              </p>
+              <p className="eyebrow">{profile.role}</p>
+              <h1>
+                Hola, soy <span className="gradient-text">{profile.name}</span>.
+              </h1>
+              <p className="pitch">{profile.pitch}</p>
+              <p className="looking-for hue-cyan">
+                Abierto a oportunidades en <strong>{profile.lookingFor}</strong>
+              </p>
+              <div className="hero-actions">
+                <a href="#contacto" className="btn btn-primary">
+                  Contactarme
+                </a>
+                <a href="#proyectos" className="btn btn-ghost">
+                  Ver proyectos
+                </a>
+              </div>
             </div>
-            <div className="photo-caption">
-              <strong>{profile.name}</strong>
-              {contact.location && <span>📍 {contact.location}</span>}
-              <span className="available">
-                <span className="live-dot" aria-hidden="true" /> Disponible para trabajar
-              </span>
-            </div>
-          </div>
 
-          <div className="tile intro-tile glow hue-cyan">
-            <p className="eyebrow">{profile.role}</p>
-            <h1>
-              Hola, soy <span className="gradient-text">{profile.name}</span>.
-            </h1>
-            <p className="pitch">{profile.pitch}</p>
-            <p className="looking-for">
-              <span aria-hidden="true">🎯</span> Abierto a oportunidades en <strong>{profile.lookingFor}</strong>
-            </p>
-            <div className="hero-actions">
-              <a href="#contacto" className="btn btn-primary">
-                Contactarme
-              </a>
-              <a href="#proyectos" className="btn btn-ghost">
-                Ver proyectos
-              </a>
+            <div className="hero-visual">
+              <div className="avatar">
+                <span className="avatar-halo" aria-hidden="true" />
+                <span className="avatar-light" aria-hidden="true" />
+                {profile.photo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={profile.photo} alt={`Foto de ${profile.name}`} />
+                ) : (
+                  <span className="avatar-initials" role="img" aria-label={`Iniciales de ${profile.name}`}>
+                    {initials(profile.name)}
+                  </span>
+                )}
+              </div>
+              <div className="float-chip chip-a hue-pink">
+                <strong>{techCount}</strong>
+                <span>tecnologías</span>
+              </div>
+              <div className="float-chip chip-b hue-amber">
+                <strong>{education.length}</strong>
+                <span>títulos y carreras</span>
+              </div>
+              <div className="float-chip chip-c hue-green">
+                <strong>{teaching.subjects.length}</strong>
+                <span>materias que dicto</span>
+              </div>
             </div>
-          </div>
-
-          <div className="tile stat-tile glow hue-pink">
-            <strong>{techCount}</strong>
-            <span>tecnologías</span>
-          </div>
-          <div className="tile stat-tile glow hue-amber">
-            <strong>{education.length}</strong>
-            <span>títulos y carreras</span>
-          </div>
-          <div className="tile stat-tile glow hue-green">
-            <strong>{teaching.subjects.length}</strong>
-            <span>materias que dicto</span>
           </div>
         </section>
 
-        <section id="proyectos" className="section">
-          <h2 className="section-title">Proyectos</h2>
-          <div className="card-grid">
-            {sortedProjects.map((p, i) => (
-              <ProjectCard key={p.slug} project={p} hue={HUES[i % HUES.length]} />
-            ))}
-          </div>
-        </section>
+        <div className="page-body">
+          <section id="proyectos" className="section">
+            <SectionHead title="Proyectos" sub="con código público" />
+            <div className="feature-list">
+              {sortedProjects.map((p, i) => (
+                <ProjectCard key={p.slug} project={p} hue={HUES[i % HUES.length]} />
+              ))}
+            </div>
+          </section>
+        </div>
 
+        <Marquee items={allSkills} />
+
+        <div className="page-body">
         <section id="repos" className="section">
-          <h2 className="section-title">Repositorios públicos</h2>
+          <SectionHead title="Repositorios públicos" sub="en vivo desde GitHub" />
           {reposResult ? (
             <GitHubRepos result={reposResult} />
           ) : (
@@ -245,16 +303,16 @@ export default async function Home() {
         </section>
 
         <section id="docencia" className="section">
-          <h2 className="section-title">Docencia y mentoría</h2>
+          <SectionHead title="Docencia y mentoría" sub="formando técnicos" />
           <div className={studentProjects.length > 0 ? "teaching-layout" : undefined}>
             <div className="teaching-col">
               <h3 className="subhead">Mi rol</h3>
-              <article className="card glow hue-amber teaching-card">
+              <Reveal as="article" className="card glow hue-amber teaching-card">
                 <p className="role">Docente · nivel técnico secundario</p>
                 <p>{teaching.summary}</p>
                 <h3 className="mini-title">Materias</h3>
                 <Tags items={teaching.subjects} />
-              </article>
+              </Reveal>
             </div>
 
             {studentProjects.length > 0 && (
@@ -267,6 +325,7 @@ export default async function Home() {
                       mentorship={m}
                       repoInfo={studentRepos[i]}
                       hue={HUES[(i + 2) % HUES.length]}
+                      index={i + 1}
                     />
                   ))}
                 </div>
@@ -281,8 +340,10 @@ export default async function Home() {
           )}
         </section>
 
-        <section id="trayectoria" className="section bento split">
-          <div className="tile glow hue-green">
+        <section id="trayectoria" className="section">
+          <SectionHead title="Trayectoria" sub="formación, este año y stack" />
+          <div className="bento split">
+          <Reveal className="tile glow hue-green">
             <h2 className="section-title">Formación</h2>
             <ol className="education">
               {education.map((e) => (
@@ -296,8 +357,8 @@ export default async function Home() {
                 </li>
               ))}
             </ol>
-          </div>
-          <div className="tile glow hue-violet">
+          </Reveal>
+          <Reveal index={1} className="tile glow hue-violet">
             <h2 className="section-title">Mi 2026</h2>
             <ol className="timeline">
               {sortedTimeline.map((item) => (
@@ -310,8 +371,8 @@ export default async function Home() {
                 </li>
               ))}
             </ol>
-          </div>
-          <div className="tile glow hue-cyan span-all">
+          </Reveal>
+          <Reveal className="tile glow hue-cyan span-all">
             <h2 className="section-title">Stack</h2>
             <dl className="skills">
               {Object.entries(skills).map(([group, items]) => (
@@ -323,13 +384,15 @@ export default async function Home() {
                 </div>
               ))}
             </dl>
+          </Reveal>
           </div>
         </section>
+        </div>
 
-        <section id="contacto" className="section">
-          <div className="tile contact-tile glow hue-pink">
+        <section id="contacto" className="contact-band">
+          <SectionHead title="Hablemos" sub="de tu próximo proyecto" />
+          <Reveal className="tile contact-tile glow hue-pink">
             <div className="contact-intro">
-              <h2 className="section-title">Contacto</h2>
               <p className="pitch">
                 ¿Tienes un proyecto, una propuesta laboral o quieres que mentoree a tu equipo? Escríbeme.
               </p>
@@ -372,9 +435,13 @@ export default async function Home() {
                 Completa <code>contact</code> en <code>data/portfolio.ts</code> con tus datos.
               </p>
             )}
-          </div>
+          </Reveal>
         </section>
       </main>
+
+      <a href="#contacto" className="btn btn-primary float-cta">
+        Contactarme
+      </a>
 
       <footer className="site-footer">
         © {new Date().getFullYear()} {profile.name} · Hecho con Next.js y desplegado en Vercel ·{" "}
