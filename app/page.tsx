@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import GitHubRepos from "@/components/GitHubRepos";
+import PhotoOrbit from "@/components/PhotoOrbit";
 import StudentRepo from "@/components/StudentRepo";
 import ThemeToggle from "@/components/ThemeToggle";
 import { getRepo, getRepos, type Repo } from "@/lib/github-server";
@@ -254,6 +255,13 @@ export default async function Home() {
 
   return (
     <>
+      {/* Bienvenida: solo CSS, para que se vea desde el primer instante y termine aunque falle el JavaScript */}
+      <div className="intro" aria-hidden="true">
+        <p>
+          Hola, soy <span className="gradient-text">{profile.name}</span>
+        </p>
+      </div>
+
       <header className="site-header is-at-top">
         <a href="#inicio" className="brand">
           <span className="brand-mark">{initials(profile.name)}</span>
@@ -279,14 +287,17 @@ export default async function Home() {
                 </span>
                 {contact.location && <span>{contact.location}</span>}
               </p>
-              <p className="eyebrow">{profile.role}</p>
+              <ul className="hero-roles">
+                {profile.roles.map((role, i) => (
+                  <li key={role} className={`hue-${["cyan", "violet", "pink"][i % 3]}`}>
+                    {role}
+                  </li>
+                ))}
+              </ul>
               <h1>
                 Hola, soy <span className="gradient-text">{profile.name}</span>.
               </h1>
               <p className="pitch">{profile.pitch}</p>
-              <p className="looking-for hue-cyan">
-                Abierto a oportunidades en <strong>{profile.lookingFor}</strong>
-              </p>
               <div className="hero-actions">
                 <a href="#contacto" className="btn btn-primary">
                   Contactarme
@@ -309,6 +320,7 @@ export default async function Home() {
                     {initials(profile.name)}
                   </span>
                 )}
+                <PhotoOrbit titles={profile.orbit} />
               </div>
             </div>
           </div>
@@ -431,7 +443,7 @@ export default async function Home() {
 
         <section id="contacto" className="contact-band">
           <SectionHead title="Hablemos" sub="de tu próximo proyecto" />
-          <Reveal className="tile contact-tile glow hue-pink">
+          <Reveal className="contact-tile hue-pink">
             <div className="contact-intro">
               <p className="pitch">
                 ¿Tienes un proyecto, una propuesta laboral o quieres que mentoree a tu equipo? Escríbeme.

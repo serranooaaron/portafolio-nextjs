@@ -9,6 +9,10 @@ const PRESS_MS = 900;
 // tarjeta .glow que está debajo, y el CSS dibuja el destello en ese punto.
 // En pantallas táctiles hace lo mismo al tocar. pointerup no se dispara si el dedo
 // empezó a hacer scroll, así que recorrer la página no enciende las tarjetas.
+function glowAt(target: EventTarget | null) {
+  return target instanceof Element ? target.closest<HTMLElement>(".glow") : null;
+}
+
 export default function Spotlight() {
   useEffect(() => {
     let frame = 0;
@@ -17,7 +21,7 @@ export default function Spotlight() {
     function paint() {
       frame = 0;
       if (!last) return;
-      const target = (last.target as Element | null)?.closest<HTMLElement>(".glow");
+      const target = glowAt(last.target);
       if (!target) return;
       const rect = target.getBoundingClientRect();
       target.style.setProperty("--mx", `${last.clientX - rect.left}px`);
@@ -35,7 +39,7 @@ export default function Spotlight() {
     function onTap(e: PointerEvent) {
       if (e.pointerType === "mouse") return;
       if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      const target = (e.target as Element | null)?.closest<HTMLElement>(".glow");
+      const target = glowAt(e.target);
       if (!target) return;
       const rect = target.getBoundingClientRect();
       target.style.setProperty("--mx", `${e.clientX - rect.left}px`);

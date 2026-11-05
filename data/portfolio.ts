@@ -57,10 +57,13 @@ export type EducationItem = {
 
 export const profile = {
   name: "Aaron Serrano",
-  role: "Backend · Ciencia de Datos · Docente",
+  role: "Data Analyst · Data Scientist · Docente IT",
+  // Roles a los que apunto: se destacan en el hero.
+  roles: ["Data Analyst", "Data Scientist", "Docente IT"],
+  // Títulos que giran alrededor de la foto.
+  orbit: ["Data Science", "Data Analyst", "Machine Learning"],
   pitch:
     "Técnico Superior en Análisis de Sistemas y estudiante avanzado de Ciencia de Datos. Combino ingeniería de software rigurosa con pensamiento analítico: entiendo los datos, sé modelarlos y tomo decisiones técnicas con criterio.",
-  lookingFor: "Data Engineering, Desarrollo Backend y Data Science / ML Engineering",
   // Archivo en public/. Con null se muestran las iniciales.
   photo: "/foto.png" as string | null,
   links: {
