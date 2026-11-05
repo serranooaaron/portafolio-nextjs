@@ -475,6 +475,20 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
   will-change: translate;
 }
 .marquee-row:nth-child(even) { translate: calc(var(--shift) - 600px) 0; }
+/* Logos sin fondo: dejan ver el color de la página detrás */
+.marquee-logos { gap: 40px; align-items: center; padding: 10px 0; }
+.marquee-logos img { width: 44px; height: 44px; opacity: 0.45; }
+/* Logos casi negros: en tema oscuro se aclaran para no perderse en el fondo */
+:root[data-theme="dark"] [data-logo="express"],
+:root[data-theme="dark"] [data-logo="django"] { filter: invert(1); }
+/* Logos azul oscuro: mismo problema, sin cambiarles el color */
+:root[data-theme="dark"] [data-logo="mysql"],
+:root[data-theme="dark"] [data-logo="php"],
+:root[data-theme="dark"] [data-logo="pandas"],
+:root[data-theme="dark"] [data-logo="sqlite"],
+:root[data-theme="dark"] [data-logo="postgresql"],
+:root[data-theme="dark"] [data-logo="csharp"] { filter: brightness(1.8); }
+:root[data-theme="dark"] .marquee-logos img { opacity: 0.65; }
 .marquee-item {
   padding: 10px 22px;
   border-radius: 999px;
@@ -484,6 +498,44 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
   color: var(--text);
   background: color-mix(in srgb, var(--hue) 12%, var(--surface));
   border: 1px solid color-mix(in srgb, var(--hue) 30%, var(--border));
+}
+
+/* Stack en celular: reemplaza a las franjas y a la tarjeta Stack de Trayectoria */
+.stack-mobile { display: none; }
+.stack-group { margin-top: 20px; }
+.stack-group h3 { margin-bottom: 10px; font-size: 1rem; color: var(--muted); }
+.stack-group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: 8px;
+}
+.stack-group li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 4px;
+  border-radius: 14px;
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  background: color-mix(in srgb, var(--hue) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--hue) 22%, var(--border));
+}
+.stack-group img { width: 32px; height: 32px; }
+.stack-initials {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--on-accent);
+  background: var(--hue);
 }
 
 .card-links { margin-top: auto; display: flex; gap: 16px; font-weight: 600; font-size: 0.95rem; }
@@ -853,6 +905,10 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
   .feature:nth-child(even),
   .contact-tile { grid-template-columns: 1fr; }
   .feature .feature-shot { order: -1; } /* en una columna, primero la captura */
+
+  .marquee,
+  .stack-tile { display: none; }
+  .stack-mobile { display: block; }
 
   /* Una columna: la foto va debajo del texto y los datos forman una fila */
   .hero { min-height: 0; padding-top: 88px; }

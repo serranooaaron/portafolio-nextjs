@@ -8,6 +8,7 @@ import {
   HAS_LINKS,
   contact,
   education,
+  logos,
   mentorships,
   teaching,
   profile,
@@ -101,12 +102,28 @@ function ProjectCard({ project, hue }: { project: Project; hue: string }) {
   );
 }
 
-// Franja decorativa: el mismo listado se lee completo y accesible en la sección Stack.
+// Fila de logos sin fondo: acompaña a las franjas y se mueve con ellas.
+function LogoRow({ icons }: { icons: string[] }) {
+  return (
+    <div className="marquee-row marquee-logos">
+      {Array.from({ length: 3 }, () => icons)
+        .flat()
+        .map((icon, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img key={i} src={`/stack/${icon}.svg`} alt="" width={44} height={44} loading="lazy" data-logo={icon} />
+        ))}
+    </div>
+  );
+}
+
+// Franja decorativa de escritorio: el mismo listado se lee completo y accesible en la sección Stack.
 function Marquee({ items }: { items: string[] }) {
   const half = Math.ceil(items.length / 2);
   const rows = [items.slice(0, half), items.slice(half)];
+  const icons = [...new Set(Object.values(logos))];
   return (
     <div className="marquee" aria-hidden="true">
+      <LogoRow icons={icons} />
       {rows.map((row, r) => (
         <div key={r} className="marquee-row">
           {Array.from({ length: 4 }, () => row)
@@ -118,7 +135,37 @@ function Marquee({ items }: { items: string[] }) {
             ))}
         </div>
       ))}
+      <LogoRow icons={[...icons].reverse()} />
     </div>
+  );
+}
+
+// Stack en celular: todo a la vista, sin depender del recorrido del scroll.
+function StackGrid() {
+  return (
+    <section className="stack-mobile section">
+      <SectionHead title="Stack" sub="con qué trabajo" />
+      {Object.entries(skills).map(([group, items], g) => (
+        <Reveal key={group} className={`stack-group hue-${HUES[g % HUES.length]}`}>
+          <h3>{group}</h3>
+          <ul>
+            {items.map((item) => (
+              <li key={item}>
+                {logos[item] ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={`/stack/${logos[item]}.svg`} alt="" width={32} height={32} loading="lazy" data-logo={logos[item]} />
+                ) : (
+                  <span className="stack-initials" aria-hidden="true">
+                    {initials(item)}
+                  </span>
+                )}
+                {item}
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+      ))}
+    </section>
   );
 }
 
@@ -294,6 +341,8 @@ export default async function Home() {
         <Marquee items={allSkills} />
 
         <div className="page-body">
+          <StackGrid />
+
         <section id="repos" className="section">
           <SectionHead title="Repositorios públicos" sub="en vivo desde GitHub" />
           {reposResult ? (
@@ -345,7 +394,7 @@ export default async function Home() {
         </section>
 
         <section id="trayectoria" className="section">
-          <SectionHead title="Trayectoria" sub="formación, este año y stack" />
+          <SectionHead title="Trayectoria" sub="formación y este año" />
           <div className="bento split">
           <Reveal className="tile glow hue-green">
             <h2 className="section-title">Formación</h2>
@@ -376,7 +425,7 @@ export default async function Home() {
               ))}
             </ol>
           </Reveal>
-          <Reveal className="tile glow hue-cyan span-all">
+          <Reveal className="tile glow hue-cyan span-all stack-tile">
             <h2 className="section-title">Stack</h2>
             <dl className="skills">
               {Object.entries(skills).map(([group, items]) => (

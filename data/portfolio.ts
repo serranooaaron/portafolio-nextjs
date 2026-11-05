@@ -1,5 +1,7 @@
 // Fuente de datos del portafolio. Mantenerlo en sincronía con registro-2026.md.
 
+import stackLogos from "./stack-logos.json";
+
 export const GITHUB_USER: string = "serranooaaron";
 
 // Mientras GITHUB_USER sea el marcador, la página no muestra enlaces rotos.
@@ -161,6 +163,9 @@ export const teaching = {
     "Docente de nivel técnico secundario, con foco en la inserción laboral de mis estudiantes. Enseñar me formó como profesional: desarrollé criterio para explicar, liderar y acompañar procesos complejos.",
   subjects: ["Programación Orientada a Objetos", "Prácticas Profesionalizantes"],
 };
+
+// Tecnología → logo en public/stack. Las que no tienen logo muestran sus iniciales.
+export const logos: Record<string, string> = stackLogos;
 
 export const skills: Record<string, string[]> = {
   Lenguajes: ["Java 21", "JavaScript", "Python", "C#", "C++", "PHP"],
