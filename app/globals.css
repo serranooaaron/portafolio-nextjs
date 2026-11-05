@@ -158,7 +158,6 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
   font-size: 0.95rem;
   transition: color 0.2s, background-color 0.2s;
 }
-.site-nav a:hover { color: var(--text); background: var(--surface-2); }
 
 /* Selector de tema */
 .theme-toggle { flex-shrink: 0; background: none; border: 0; padding: 0; cursor: pointer; }
@@ -401,7 +400,6 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s;
 }
-.btn:hover { transform: translateY(-2px); }
 .btn-primary {
   color: var(--on-accent);
   background: linear-gradient(90deg, var(--violet), var(--pink));
@@ -458,7 +456,6 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
   height: auto;
   transition: scale 0.4s var(--ease-out);
 }
-.feature:hover .feature-shot img { scale: 1.02; }
 .feature:nth-child(even) { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
 .feature:nth-child(even) .feature-shot { order: -1; }
 
@@ -541,17 +538,25 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
   transform: translateX(-100%) skewX(-12deg);
   opacity: 0;
 }
-.glow:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--hue, var(--accent)) 55%, var(--border));
-  box-shadow: var(--shadow), 0 16px 40px color-mix(in srgb, var(--hue, var(--accent)) 22%, transparent);
+/* Solo con mouse: en pantallas táctiles :hover queda pegado después de tocar */
+@media (hover: hover) and (pointer: fine) {
+  .site-nav a:hover { color: var(--text); background: var(--surface-2); }
+  .btn:hover { transform: translateY(-2px); }
+  .feature:hover .feature-shot img { scale: 1.02; }
+  .glow:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--hue, var(--accent)) 55%, var(--border));
+    box-shadow: var(--shadow), 0 16px 40px color-mix(in srgb, var(--hue, var(--accent)) 22%, transparent);
+  }
+  .glow:hover::before { opacity: 1; }
+  .glow:hover::after { animation: shine 0.9s ease forwards; }
 }
-.glow:hover::before { opacity: 1; }
-.glow:hover::after { animation: shine 0.9s ease forwards; }
 
+/* Termina invisible y fuera de la tarjeta: nunca queda una franja en el borde */
 @keyframes shine {
-  0% { opacity: 1; transform: translateX(-100%) skewX(-12deg); }
-  100% { opacity: 1; transform: translateX(420%) skewX(-12deg); }
+  0% { opacity: 0; transform: translateX(-100%) skewX(-12deg); }
+  15%, 85% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(520%) skewX(-12deg); }
 }
 
 /* ---------- Repos en vivo ---------- */
