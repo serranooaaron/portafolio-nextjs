@@ -239,10 +239,20 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
   min-height: 100svh;
   padding: 96px clamp(16px, 4vw, 48px) 56px;
   color: var(--text);
+  isolation: isolate;
+}
+/* Los colores van en una capa con máscara: se apagan juntos antes del borde y nunca dejan un corte */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background:
     radial-gradient(50vw 50vw at 85% 15%, color-mix(in srgb, var(--violet) 26%, transparent), transparent 65%),
     radial-gradient(40vw 40vw at 5% 55%, color-mix(in srgb, var(--cyan) 18%, transparent), transparent 65%),
-    linear-gradient(to bottom, var(--band) 55%, var(--bg));
+    var(--band);
+  -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent);
+  mask-image: linear-gradient(to bottom, #000 50%, transparent);
 }
 
 .hero-inner {
@@ -799,11 +809,21 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
 .contact-band {
   margin-top: clamp(72px, 11vw, 140px);
   padding: clamp(64px, 9vw, 120px) clamp(16px, 4vw, 48px) 24px;
+  position: relative;
   color: var(--text);
+  isolation: isolate;
+}
+.contact-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background:
-    radial-gradient(50vw 50vw at 85% 85%, color-mix(in srgb, var(--violet) 26%, transparent), transparent 65%),
-    radial-gradient(40vw 40vw at 5% 45%, color-mix(in srgb, var(--cyan) 18%, transparent), transparent 65%),
-    linear-gradient(to bottom, var(--bg), var(--band) 45%);
+    radial-gradient(34vw 34vw at 85% 55%, color-mix(in srgb, var(--violet) 26%, transparent), transparent 65%),
+    radial-gradient(30vw 30vw at 5% 50%, color-mix(in srgb, var(--cyan) 18%, transparent), transparent 65%),
+    var(--band);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 50%);
+  mask-image: linear-gradient(to bottom, transparent, #000 50%);
 }
 .contact-tile {
   max-width: 1200px;
