@@ -238,7 +238,6 @@ export default async function Home() {
     Promise.all(studentProjects.map((m) => (m.repo ? getRepo(m.repo) : null))),
   ]);
   const allSkills = [...new Set(Object.values(skills).flat())];
-  const techCount = allSkills.length;
 
   const contactItems = [
     contact.email && { label: "Email", value: contact.email, href: `mailto:${contact.email}`, icon: "✉" },
@@ -310,18 +309,6 @@ export default async function Home() {
                     {initials(profile.name)}
                   </span>
                 )}
-              </div>
-              <div className="float-chip chip-a hue-pink">
-                <strong>{techCount}</strong>
-                <span>tecnologías</span>
-              </div>
-              <div className="float-chip chip-b hue-amber">
-                <strong>{education.length}</strong>
-                <span>títulos y carreras</span>
-              </div>
-              <div className="float-chip chip-c hue-green">
-                <strong>{teaching.subjects.length}</strong>
-                <span>materias que dicto</span>
               </div>
             </div>
           </div>

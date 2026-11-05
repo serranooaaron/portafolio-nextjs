@@ -357,32 +357,6 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
   50% { filter: brightness(1.12) saturate(1.1); }
 }
 
-/* Datos que flotan alrededor de la foto; cada uno se aleja a distinta velocidad con el scroll */
-.float-chip {
-  --depth: 120px;
-  position: absolute;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 16px;
-  white-space: nowrap;
-  background: color-mix(in srgb, var(--surface) 82%, transparent);
-  border: 1px solid color-mix(in srgb, var(--hue) 40%, var(--border));
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  translate: 0 calc(var(--p) * var(--depth) * -1);
-  animation: drift 6s ease-in-out infinite;
-}
-.float-chip strong { font-size: 1.6rem; line-height: 1; color: var(--hue); }
-.float-chip span { color: var(--muted); font-size: 0.88rem; }
-.chip-a { top: 6%; left: -8%; --depth: 200px; }
-.chip-b { top: 44%; right: -10%; --depth: 110px; animation-delay: -2s; }
-.chip-c { bottom: 4%; left: -2%; --depth: 280px; animation-delay: -4s; }
-
-@keyframes drift { 50% { transform: translateY(-10px); } }
-
 .eyebrow { color: var(--hue, var(--accent)); font-weight: 700; margin: 0; letter-spacing: 0.3px; }
 .pitch { color: var(--muted); font-size: clamp(1rem, 1.4vw, 1.2rem); max-width: 62ch; margin: 0; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
@@ -603,6 +577,15 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
   .glow:hover::before { opacity: 1; }
   .glow:hover::after { animation: shine 0.9s ease forwards; }
 }
+
+/* Al tocar en pantallas táctiles: dura lo que el destello y se quita solo, nunca queda pegado */
+.glow.is-pressed {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--hue, var(--accent)) 55%, var(--border));
+  box-shadow: var(--shadow), 0 16px 40px color-mix(in srgb, var(--hue, var(--accent)) 22%, transparent);
+}
+.glow.is-pressed::before { opacity: 1; }
+.glow.is-pressed::after { animation: shine 0.9s ease forwards; }
 
 /* Termina invisible y fuera de la tarjeta: nunca queda una franja en el borde */
 @keyframes shine {
@@ -891,8 +874,7 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
 /* Texto de color: se mezcla con el color del texto para llegar a 4.5:1 en los dos temas */
 .card .role,
 .card-links a,
-.student-repo-link,
-.float-chip strong { color: color-mix(in srgb, var(--hue) 75%, var(--text)); }
+.student-repo-link { color: color-mix(in srgb, var(--hue) 75%, var(--text)); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
@@ -910,23 +892,16 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
   .stack-tile { display: none; }
   .stack-mobile { display: block; }
 
-  /* Una columna: la foto va debajo del texto y los datos forman una fila */
+  /* Una columna: el saludo, la foto y después el resto del texto */
   .hero { min-height: 0; padding-top: 88px; }
-  .hero-inner { grid-template-columns: minmax(0, 1fr); }
-  .hero-visual { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%; max-width: 480px; }
-  .avatar { grid-column: 1 / -1; width: min(76%, 300px); margin-bottom: 20px; }
-  .float-chip {
-    position: static;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    padding: 10px 6px;
-    white-space: normal;
-    text-align: center;
-    translate: none;
-    animation: none;
-  }
-  .float-chip span { font-size: 0.8rem; line-height: 1.25; }
+  .hero-inner { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+  .hero-copy { display: contents; }
+  .hero-copy > * { order: 2; }
+  .hero-meta,
+  .hero-copy .eyebrow,
+  .hero-copy h1 { order: 0; }
+  .hero-visual { order: 1; align-self: center; width: 100%; margin: 28px 0; }
+  .avatar { width: min(76%, 300px); translate: none; }
 }
 
 @media (max-width: 640px) {
