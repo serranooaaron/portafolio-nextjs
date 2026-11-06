@@ -20,7 +20,20 @@ import {
   type Project,
 } from "@/data/portfolio";
 
-const MONTHS = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+const MONTHS = [
+  "ene",
+  "feb",
+  "mar",
+  "abr",
+  "may",
+  "jun",
+  "jul",
+  "ago",
+  "sep",
+  "oct",
+  "nov",
+  "dic",
+];
 const HUES = ["violet", "cyan", "pink", "amber", "green"] as const;
 
 function formatMonth(date: string) {
@@ -67,7 +80,11 @@ function Reveal({
   children: ReactNode;
 }) {
   return (
-    <Tag className={className} data-reveal="scale" style={{ "--i": index } as CSSProperties}>
+    <Tag
+      className={className}
+      data-reveal="scale"
+      style={{ "--i": index } as CSSProperties}
+    >
       {children}
     </Tag>
   );
@@ -97,7 +114,13 @@ function ProjectCard({ project, hue }: { project: Project; hue: string }) {
       </div>
       <div className="feature-shot">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={project.image} alt={project.imageAlt} width={1200} height={750} loading="lazy" />
+        <img
+          src={project.image}
+          alt={project.imageAlt}
+          width={1200}
+          height={750}
+          loading="lazy"
+        />
       </div>
     </Reveal>
   );
@@ -111,7 +134,15 @@ function LogoRow({ icons }: { icons: string[] }) {
         .flat()
         .map((icon, i) => (
           // eslint-disable-next-line @next/next/no-img-element
-          <img key={i} src={`/stack/${icon}.svg`} alt="" width={44} height={44} loading="lazy" data-logo={icon} />
+          <img
+            key={i}
+            src={`/stack/${icon}.svg`}
+            alt=""
+            width={44}
+            height={44}
+            loading="lazy"
+            data-logo={icon}
+          />
         ))}
     </div>
   );
@@ -130,7 +161,10 @@ function Marquee({ items }: { items: string[] }) {
           {Array.from({ length: 4 }, () => row)
             .flat()
             .map((item, i) => (
-              <span key={i} className={`marquee-item hue-${HUES[(i + r * 2) % HUES.length]}`}>
+              <span
+                key={i}
+                className={`marquee-item hue-${HUES[(i + r * 2) % HUES.length]}`}
+              >
                 {item}
               </span>
             ))}
@@ -147,14 +181,24 @@ function StackGrid() {
     <section className="stack-mobile section">
       <SectionHead title="Stack" sub="con qué trabajo" />
       {Object.entries(skills).map(([group, items], g) => (
-        <Reveal key={group} className={`stack-group hue-${HUES[g % HUES.length]}`}>
+        <Reveal
+          key={group}
+          className={`stack-group hue-${HUES[g % HUES.length]}`}
+        >
           <h3>{group}</h3>
           <ul>
             {items.map((item) => (
               <li key={item}>
                 {logos[item] ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={`/stack/${logos[item]}.svg`} alt="" width={32} height={32} loading="lazy" data-logo={logos[item]} />
+                  <img
+                    src={`/stack/${logos[item]}.svg`}
+                    alt=""
+                    width={32}
+                    height={32}
+                    loading="lazy"
+                    data-logo={logos[item]}
+                  />
                 ) : (
                   <span className="stack-initials" aria-hidden="true">
                     {initials(item)}
@@ -193,7 +237,9 @@ function MentorshipCard({
       </p>
       {mentorship.school && <p className="school">{mentorship.school}</p>}
       {mentorship.summary && <p>{mentorship.summary}</p>}
-      {authors.length > 0 && <p className="authors">Desarrollado por {authors.join(", ")}</p>}
+      {authors.length > 0 && (
+        <p className="authors">Desarrollado por {authors.join(", ")}</p>
+      )}
       {contribution.length > 0 && (
         <ul className="highlights">
           {contribution.map((c) => (
@@ -203,7 +249,11 @@ function MentorshipCard({
       )}
       {stack.length > 0 && <Tags items={stack} />}
       {mentorship.repo && (
-        <StudentRepo url={mentorship.repo} info={repoInfo} showDescription={!mentorship.summary} />
+        <StudentRepo
+          url={mentorship.repo}
+          info={repoInfo}
+          showDescription={!mentorship.summary}
+        />
       )}
       {mentorship.demo && (
         <footer className="card-links">
@@ -227,8 +277,12 @@ const NAV = [
 export const revalidate = 600;
 
 export default async function Home() {
-  const sortedProjects = [...projects].sort((a, b) => Number(b.featured) - Number(a.featured));
-  const sortedTimeline = [...timeline].sort((a, b) => b.date.localeCompare(a.date));
+  const sortedProjects = [...projects].sort(
+    (a, b) => Number(b.featured) - Number(a.featured),
+  );
+  const sortedTimeline = [...timeline].sort((a, b) =>
+    b.date.localeCompare(a.date),
+  );
   const studentProjects = mentorships
     .filter((m) => m.published)
     .sort((a, b) => b.date.localeCompare(a.date));
@@ -241,17 +295,41 @@ export default async function Home() {
   const allSkills = [...new Set(Object.values(skills).flat())];
 
   const contactItems = [
-    contact.email && { label: "Email", value: contact.email, href: `mailto:${contact.email}`, icon: "✉" },
+    contact.email && {
+      label: "Email",
+      value: contact.email,
+      href: `mailto:${contact.email}`,
+      icon: "✉",
+    },
     contact.phone && {
       label: "Teléfono / WhatsApp",
       value: contact.phone,
       href: `https://wa.me/${contact.whatsapp || contact.phone.replace(/\D/g, "")}`,
       icon: "☏",
     },
-    contact.linkedin && { label: "LinkedIn", value: "/in/serranooaaron", href: contact.linkedin, icon: "in" },
-    contact.github && { label: "GitHub", value: `@${GITHUB_USER}`, href: contact.github, icon: "⌥" },
-    contact.location && { label: "Ubicación", value: contact.location, icon: "⌖" },
-  ].filter(Boolean) as { label: string; value: string; href?: string; icon: string }[];
+    contact.linkedin && {
+      label: "LinkedIn",
+      value: "/in/serranooaaron",
+      href: contact.linkedin,
+      icon: "in",
+    },
+    contact.github && {
+      label: "GitHub",
+      value: `@${GITHUB_USER}`,
+      href: contact.github,
+      icon: "⌥",
+    },
+    contact.location && {
+      label: "Ubicación",
+      value: contact.location,
+      icon: "⌖",
+    },
+  ].filter(Boolean) as {
+    label: string;
+    value: string;
+    href?: string;
+    icon: string;
+  }[];
 
   return (
     <>
@@ -281,19 +359,6 @@ export default async function Home() {
         <section className="hero">
           <div className="hero-inner">
             <div className="hero-copy">
-              <p className="hero-meta">
-                <span className="available">
-                  <span className="live-dot" aria-hidden="true" /> Disponible para trabajar
-                </span>
-                {contact.location && <span>{contact.location}</span>}
-              </p>
-              <ul className="hero-roles">
-                {profile.roles.map((role, i) => (
-                  <li key={role} className={`hue-${["cyan", "violet", "pink"][i % 3]}`}>
-                    {role}
-                  </li>
-                ))}
-              </ul>
               <h1>
                 Hola, soy <span className="gradient-text">{profile.name}</span>.
               </h1>
@@ -306,6 +371,23 @@ export default async function Home() {
                   Ver proyectos
                 </a>
               </div>
+              <p className="hero-meta">
+                <span className="available">
+                  <span className="live-dot" aria-hidden="true" /> Disponible
+                  para trabajar
+                </span>
+                {contact.location && <span>{contact.location}</span>}
+              </p>
+              <ul className="hero-roles">
+                {profile.roles.map((role, i) => (
+                  <li
+                    key={role}
+                    className={`hue-${["cyan", "violet", "pink"][i % 3]}`}
+                  >
+                    {role}
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className="hero-visual">
@@ -316,7 +398,11 @@ export default async function Home() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={profile.photo} alt={`Foto de ${profile.name}`} />
                 ) : (
-                  <span className="avatar-initials" role="img" aria-label={`Iniciales de ${profile.name}`}>
+                  <span
+                    className="avatar-initials"
+                    role="img"
+                    aria-label={`Iniciales de ${profile.name}`}
+                  >
                     {initials(profile.name)}
                   </span>
                 )}
@@ -331,7 +417,11 @@ export default async function Home() {
             <SectionHead title="Proyectos" sub="con código público" />
             <div className="feature-list">
               {sortedProjects.map((p, i) => (
-                <ProjectCard key={p.slug} project={p} hue={HUES[i % HUES.length]} />
+                <ProjectCard
+                  key={p.slug}
+                  project={p}
+                  hue={HUES[i % HUES.length]}
+                />
               ))}
             </div>
           </section>
@@ -342,103 +432,116 @@ export default async function Home() {
         <div className="page-body">
           <StackGrid />
 
-        <section id="repos" className="section">
-          <SectionHead title="Repositorios públicos" sub="en vivo desde GitHub" />
-          {reposResult ? (
-            <GitHubRepos result={reposResult} />
-          ) : (
-            <p className="notice">
-              Configura <code>GITHUB_USER</code> en <code>data/portfolio.ts</code> para ver tus repositorios en
-              vivo.
-            </p>
-          )}
-        </section>
+          <section id="repos" className="section">
+            <SectionHead
+              title="Repositorios públicos"
+              sub="en vivo desde GitHub"
+            />
+            {reposResult ? (
+              <GitHubRepos result={reposResult} />
+            ) : (
+              <p className="notice">
+                Configura <code>GITHUB_USER</code> en{" "}
+                <code>data/portfolio.ts</code> para ver tus repositorios en
+                vivo.
+              </p>
+            )}
+          </section>
 
-        <section id="docencia" className="section">
-          <SectionHead title="Docencia y mentoría" sub="formando técnicos" />
-          <div className={studentProjects.length > 0 ? "teaching-layout" : undefined}>
-            <div className="teaching-col">
-              <h3 className="subhead">Mi rol</h3>
-              <Reveal as="article" className="card glow hue-amber teaching-card">
-                <p className="role">Docente · nivel técnico secundario</p>
-                <p>{teaching.summary}</p>
-                <h3 className="mini-title">Materias</h3>
-                <Tags items={teaching.subjects} />
+          <section id="docencia" className="section">
+            <SectionHead title="Docencia y mentoría" sub="formando técnicos" />
+            <div
+              className={
+                studentProjects.length > 0 ? "teaching-layout" : undefined
+              }
+            >
+              <div className="teaching-col">
+                <h3 className="subhead">Mi rol</h3>
+                <Reveal
+                  as="article"
+                  className="card glow hue-amber teaching-card"
+                >
+                  <p className="role">Docente · nivel técnico secundario</p>
+                  <p>{teaching.summary}</p>
+                  <h3 className="mini-title">Materias</h3>
+                  <Tags items={teaching.subjects} />
+                </Reveal>
+              </div>
+
+              {studentProjects.length > 0 && (
+                <div className="student-projects">
+                  <h3 className="subhead">Proyectos de mis alumnos</h3>
+                  <div className="student-grid">
+                    {studentProjects.map((m, i) => (
+                      <MentorshipCard
+                        key={m.slug}
+                        mentorship={m}
+                        repoInfo={studentRepos[i]}
+                        hue={HUES[(i + 2) % HUES.length]}
+                        index={i + 1}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            {studentProjects.length > 0 && (
+              <p className="section-note after">
+                Los proyectos de alumnos se publican con permiso de sus autores.
+                Yo guío y reviso; el código es de los estudiantes.
+              </p>
+            )}
+          </section>
+
+          <section id="trayectoria" className="section">
+            <SectionHead title="Trayectoria" sub="formación y este año" />
+            <div className="bento split">
+              <Reveal className="tile glow hue-green">
+                <h2 className="section-title">Formación</h2>
+                <ol className="education">
+                  {education.map((e) => (
+                    <li key={e.title}>
+                      <span className="edu-period">
+                        {e.period}
+                        {e.current && <span className="badge">En curso</span>}
+                      </span>
+                      <strong>{e.title}</strong>
+                      {e.institution && (
+                        <span className="edu-inst">{e.institution}</span>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </Reveal>
+              <Reveal index={1} className="tile glow hue-violet">
+                <h2 className="section-title">Mi 2026</h2>
+                <ol className="timeline">
+                  {sortedTimeline.map((item) => (
+                    <li key={item.date + item.title}>
+                      <time dateTime={item.date}>{formatMonth(item.date)}</time>
+                      <div>
+                        <strong>{item.title}</strong>
+                        <span>{item.detail}</span>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </Reveal>
+              <Reveal className="tile glow hue-cyan span-all stack-tile">
+                <h2 className="section-title">Stack</h2>
+                <dl className="skills">
+                  {Object.entries(skills).map(([group, items]) => (
+                    <div key={group}>
+                      <dt>{group}</dt>
+                      <dd>
+                        <Tags items={items} />
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
               </Reveal>
             </div>
-
-            {studentProjects.length > 0 && (
-              <div className="student-projects">
-                <h3 className="subhead">Proyectos de mis alumnos</h3>
-                <div className="student-grid">
-                  {studentProjects.map((m, i) => (
-                    <MentorshipCard
-                      key={m.slug}
-                      mentorship={m}
-                      repoInfo={studentRepos[i]}
-                      hue={HUES[(i + 2) % HUES.length]}
-                      index={i + 1}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-          {studentProjects.length > 0 && (
-            <p className="section-note after">
-              Los proyectos de alumnos se publican con permiso de sus autores. Yo guío y reviso; el código es de
-              los estudiantes.
-            </p>
-          )}
-        </section>
-
-        <section id="trayectoria" className="section">
-          <SectionHead title="Trayectoria" sub="formación y este año" />
-          <div className="bento split">
-          <Reveal className="tile glow hue-green">
-            <h2 className="section-title">Formación</h2>
-            <ol className="education">
-              {education.map((e) => (
-                <li key={e.title}>
-                  <span className="edu-period">
-                    {e.period}
-                    {e.current && <span className="badge">En curso</span>}
-                  </span>
-                  <strong>{e.title}</strong>
-                  {e.institution && <span className="edu-inst">{e.institution}</span>}
-                </li>
-              ))}
-            </ol>
-          </Reveal>
-          <Reveal index={1} className="tile glow hue-violet">
-            <h2 className="section-title">Mi 2026</h2>
-            <ol className="timeline">
-              {sortedTimeline.map((item) => (
-                <li key={item.date + item.title}>
-                  <time dateTime={item.date}>{formatMonth(item.date)}</time>
-                  <div>
-                    <strong>{item.title}</strong>
-                    <span>{item.detail}</span>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </Reveal>
-          <Reveal className="tile glow hue-cyan span-all stack-tile">
-            <h2 className="section-title">Stack</h2>
-            <dl className="skills">
-              {Object.entries(skills).map(([group, items]) => (
-                <div key={group}>
-                  <dt>{group}</dt>
-                  <dd>
-                    <Tags items={items} />
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </Reveal>
-          </div>
-        </section>
+          </section>
         </div>
 
         <section id="contacto" className="contact-band">
@@ -446,7 +549,8 @@ export default async function Home() {
           <Reveal className="contact-tile hue-pink">
             <div className="contact-intro">
               <p className="pitch">
-                ¿Tienes un proyecto, una propuesta laboral o quieres que mentoree a tu equipo? Escríbeme.
+                ¿Tienes un proyecto, una propuesta laboral o quieres que
+                mentoree a tu equipo? Escríbeme.
               </p>
               {contact.email && (
                 <a href={`mailto:${contact.email}`} className="btn btn-primary">
@@ -459,7 +563,12 @@ export default async function Home() {
                 {contactItems.map((item) => (
                   <li key={item.label}>
                     {item.href ? (
-                      <a href={item.href} className="contact-item glow" target="_blank" rel="noreferrer">
+                      <a
+                        href={item.href}
+                        className="contact-item glow"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
                         <span className="contact-icon" aria-hidden="true">
                           {item.icon}
                         </span>
@@ -484,7 +593,8 @@ export default async function Home() {
               </ul>
             ) : (
               <p className="notice">
-                Completa <code>contact</code> en <code>data/portfolio.ts</code> con tus datos.
+                Completa <code>contact</code> en <code>data/portfolio.ts</code>{" "}
+                con tus datos.
               </p>
             )}
           </Reveal>
@@ -496,8 +606,11 @@ export default async function Home() {
       </a>
 
       <footer className="site-footer">
-        © {new Date().getFullYear()} {profile.name} · Hecho con Next.js y desplegado en Vercel ·{" "}
-        <a href="https://github.com/serranooaaron/portafolio-nextjs">Código fuente</a>
+        © {new Date().getFullYear()} {profile.name} · Hecho con Next.js y
+        desplegado en Vercel ·{" "}
+        <a href="https://github.com/serranooaaron/portafolio-nextjs">
+          Código fuente
+        </a>
       </footer>
     </>
   );
