@@ -449,22 +449,34 @@ export default async function Home() {
           </section>
 
           <section id="docencia" className="section">
-            <SectionHead title="Docencia y mentoría" sub="formando técnicos" />
+            <SectionHead title="Docencia" sub="formando técnicos" />
             <div
               className={
                 studentProjects.length > 0 ? "teaching-layout" : undefined
               }
             >
               <div className="teaching-col">
-                <h3 className="subhead">Mi rol</h3>
+                {studentProjects.length > 0 && (
+                  <h3 className="subhead">Mi rol</h3>
+                )}
                 <Reveal
                   as="article"
                   className="card glow hue-amber teaching-card"
                 >
-                  <p className="role">Docente · nivel técnico secundario</p>
-                  <p>{teaching.summary}</p>
-                  <h3 className="mini-title">Materias</h3>
-                  <Tags items={teaching.subjects} />
+                  <div>
+                    <p className="role">
+                      {teaching.employer} · {teaching.level}
+                    </p>
+                    <p>{teaching.summary}</p>
+                  </div>
+                  <ul className="positions">
+                    {teaching.positions.map((position) => (
+                      <li key={position.title}>
+                        <strong>{position.title}</strong>
+                        {position.period && <span>{position.period}</span>}
+                      </li>
+                    ))}
+                  </ul>
                 </Reveal>
               </div>
 

@@ -48,6 +48,11 @@ export type TimelineItem = {
   detail: string;
 };
 
+export type TeachingPosition = {
+  title: string;
+  period?: string; // por ejemplo "mar 2023 – actualidad"; si falta no se muestra
+};
+
 export type EducationItem = {
   title: string;
   institution?: string;
@@ -121,22 +126,6 @@ export const projects: Project[] = [
 ];
 
 export const mentorships: Mentorship[] = [
-  {
-    slug: "sgn",
-    name: "SGN – Sistema de Gestión de Notas",
-    date: "2026-10",
-    subject: "Prácticas Profesionalizantes",
-    school: "E.T. N° 35 \"Ing. Eduardo Latzina\"",
-    repo: "", // pegar acá el link del repo de las alumnas
-    published: true,
-    summary:
-      "Sistema web de calificaciones, legajos e inscripciones de la escuela, desarrollado por alumnas en Prácticas Profesionalizantes.",
-    contribution: [
-      "Guío el diseño y reviso el código; las alumnas lo siguen mejorando según mis correcciones",
-      "Acompañamiento en seguridad: roles, JWT y manejo de contraseñas",
-    ],
-    stack: ["Java", "Spring Boot", "Next.js", "TypeScript"],
-  },
   // Plantilla para el próximo proyecto (copiar, completar y poner published: true):
   // {
   //   slug: "nombre-corto",
@@ -152,7 +141,6 @@ export const timeline: TimelineItem[] = [
   { date: "2026-04", title: "Backend e-commerce", detail: "Express, MongoDB y Handlebars" },
   { date: "2026-08", title: "Biblioteca Digital API", detail: "API testeada y documentada con Swagger" },
   { date: "2026-11", title: "Tienda Gamer y Biblioteca Digital", detail: "Front completo, usuarios con JWT y correcciones de seguridad" },
-  { date: "2026-10", title: "Mentoría del SGN", detail: "Prácticas Profesionalizantes en la ET35" },
 ];
 
 export const education: EducationItem[] = [
@@ -164,7 +152,15 @@ export const education: EducationItem[] = [
 export const teaching = {
   summary:
     "Docente de nivel técnico secundario, con foco en la inserción laboral de mis estudiantes. Enseñar me formó como profesional: desarrollé criterio para explicar, liderar y acompañar procesos complejos.",
-  subjects: ["Programación Orientada a Objetos", "Prácticas Profesionalizantes"],
+  employer: "GCBA",
+  level: "Secundario técnico en Computación",
+  // Del más reciente al más antiguo, como en LinkedIn.
+  positions: [
+    { title: "Profesor de Prácticas Profesionalizantes", period: "2026 – actualidad" },
+    { title: "Profesor de Programación Orientada a Objetos", period: "2024 – actualidad" },
+    { title: "Ayudante Técnico de Trabajos Prácticos", period: "2022 – 2025" },
+    { title: "Profesor de Desarrollo de Sistemas", period: "2022 – 2023" },
+  ] as TeachingPosition[],
 };
 
 // Tecnología → logo en public/stack. Las que no tienen logo muestran sus iniciales.

@@ -755,7 +755,26 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
   background: var(--hue);
 }
 
-.mini-title { font-size: 0.95rem; margin-top: 4px; }
+/* Docencia: presentación a un lado y puestos al otro */
+.teaching-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: clamp(20px, 3vw, 40px);
+}
+.teaching-layout .teaching-card { grid-template-columns: minmax(0, 1fr); align-content: start; }
+.positions { list-style: none; margin: 0; padding: 0; }
+.positions li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2px 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+.positions li:first-child { border-top: 0; }
+.positions strong { font-weight: 600; }
+.positions span { color: var(--muted); font-size: 0.9rem; white-space: nowrap; }
 
 .subhead { margin: 0 0 14px; font-size: 1.1rem; color: var(--muted); }
 
@@ -992,6 +1011,7 @@ h1, h2, h3 { line-height: 1.2; margin: 0; }
 
 @media (max-width: 860px) {
   .split,
+  .teaching-card,
   .feature,
   .feature:nth-child(even),
   .contact-tile { grid-template-columns: 1fr; }
