@@ -106,11 +106,11 @@ export const projects: Project[] = [
     name: "Tienda Gamer",
     date: "2026-11",
     summary:
-      "E-commerce de periféricos gamer: catálogo con filtros, carrito por usuario y panel de administración de productos.",
+      "E-commerce de periféricos gamer: catálogo con filtros, carrito, checkout con orden de compra y panel de administración.",
     highlights: [
-      "Catálogo con búsqueda, categorías, stock y paginación",
+      "Checkout con stock atómico: la última unidad no se vende dos veces",
       "Cuentas con JWT y un carrito que solo opera su dueño",
-      "Panel de administración y 63 tests automáticos de la API",
+      "Panel de administración y 83 tests automáticos de la API",
     ],
     stack: ["Node.js", "Express", "Handlebars", "MongoDB", "JWT", "Mocha"],
     image: "/proyectos/tienda-gamer.webp",
