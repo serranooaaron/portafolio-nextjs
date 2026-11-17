@@ -51,11 +51,13 @@ async function github<T>(path: string): Promise<T> {
 
 // Si GitHub falla por un problema pasajero (límite de consultas, caída) mientras Vercel
 // regenera la página, se relanza el error: así Vercel descarta la regeneración y sigue
-// mostrando la última versión buena. Durante el build no hay versión previa, así que
-// ahí se muestra el aviso. Un 404 no es pasajero: se maneja normalmente.
+// mostrando la última versión buena. Durante el build y en desarrollo no hay versión
+// previa, así que ahí se muestra el aviso. Un 404 no es pasajero: se maneja normalmente.
 function keepPreviousVersionOn(err: unknown) {
   const transient = !(err instanceof GitHubError) || err.status !== 404;
-  if (transient && process.env.NEXT_PHASE !== "phase-production-build") throw err;
+  const canKeepPrevious =
+    process.env.NODE_ENV === "production" && process.env.NEXT_PHASE !== "phase-production-build";
+  if (transient && canKeepPrevious) throw err;
 }
 
 export async function getRepos(user: string, limit = 9): Promise<ReposResult> {
