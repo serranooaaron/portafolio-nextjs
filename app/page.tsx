@@ -109,6 +109,8 @@ function ProjectCard({ project, hue }: { project: Project; hue: string }) {
           <footer className="card-links">
             {HAS_LINKS && project.repo && <a href={project.repo}>Código →</a>}
             {project.demo && <a href={project.demo}>Demo →</a>}
+            {/* Las demos están en el plan gratuito de Render: tras un rato sin visitas tardan en despertar. */}
+            {project.demo && <small className="card-note">La demo puede tardar unos segundos en abrir.</small>}
           </footer>
         )}
       </div>
