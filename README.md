@@ -1,5 +1,7 @@
 # Portafolio · Aaron Serrano
 
+[![Build](https://github.com/serranooaaron/portafolio-nextjs/actions/workflows/build.yml/badge.svg)](https://github.com/serranooaaron/portafolio-nextjs/actions/workflows/build.yml)
+
 Mi portafolio personal: proyectos, docencia, formación y repositorios públicos de GitHub en vivo.
 
 🌐 **https://serranopf.vercel.app**

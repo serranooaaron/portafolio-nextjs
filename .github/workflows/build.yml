@@ -1,0 +1,48 @@
+# Revisa tipos y arma el sitio en cada pull request y en cada cambio que entra a main.
+# Vercel publica main: si este chequeo falla en un PR, el cambio no debería unirse.
+name: Build
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Solo lectura del código: el workflow no necesita escribir en el repo.
+permissions:
+  contents: read
+
+# Un push nuevo a la misma rama cancela la corrida anterior, que ya quedó vieja.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Tipos, build y dependencias
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Revisar tipos (TypeScript)
+        run: npx tsc --noEmit
+
+      # Sin GITHUB_TOKEN: si la API de GitHub limita las consultas, el sitio se arma
+      # con los datos de respaldo, igual que en Vercel.
+      - name: Build de Next.js
+        run: npm run build
+
+      - name: Vulnerabilidades altas o críticas en producción
+        run: npm audit --omit=dev --audit-level=high
